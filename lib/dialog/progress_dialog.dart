@@ -11,7 +11,8 @@ class ProgressDialog extends StatelessWidget {
         padding: const EdgeInsets.only(top: 15,bottom: 15 ,left: 15,right: 15),
         child: Row(
           children: [
-            CircularProgressIndicator(),
+            CircularProgressIndicator(
+            ),
             SizedBox(width: 20,),
             Flexible(child: Text(title)),
           ],

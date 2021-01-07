@@ -16,7 +16,7 @@ void showProgress(BuildContext context /*String title*/) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => Center(child: CircularProgressIndicator()),
+    builder: (context) => Center(child: CircularProgressIndicator( backgroundColor: Colors.white,)),
   );
 }
 

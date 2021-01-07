@@ -18,4 +18,13 @@ class MyColors{
   static Color buttonTxtBlue = Colors.blue;
   static Color buttonTxtGrey = Colors.grey;
 
+
+  //drawer
+  static Color drawer = Color(0xffd6f4ff);
+  static Color drawerTxt = Colors.black54;
+
+
+  static Color invoiceTxt = Colors.black54;
+  static Color boxShadow = Colors.black26;
+  static Color divider = Colors.black12;
 }

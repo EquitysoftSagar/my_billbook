@@ -56,6 +56,6 @@ class Keys{
   Keys._();
 
   static String user = "user";
-  static String token = "token";
+  static String userId = "id";
   static String isLogin = "isLogin";
 }

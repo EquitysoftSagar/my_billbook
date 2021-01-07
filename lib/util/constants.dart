@@ -6,5 +6,5 @@ class Constants{
   //Collection
 
 //token
-static String token = '';
+static String userId = '';
 }
