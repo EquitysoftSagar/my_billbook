@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/constants.dart';
 
-class CustomerTextField extends StatelessWidget {
+class ItemTextField extends StatelessWidget {
 
   final String labelText;
   final FocusNode focusNode;
@@ -11,18 +10,20 @@ class CustomerTextField extends StatelessWidget {
   final _borderRadius = 5.0;
   final _borderWidth = 1.0;
   final _fontSize = 13.0;
+  int _price;
 
-  const CustomerTextField({Key key, this.labelText,this.controller,this.focusNode}) : super(key: key);
+  ItemTextField({Key key, this.labelText,this.controller,this.focusNode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      maxLength: labelText == 'Phone Number' || labelText == 'Business Number' ? 10 :  labelText == 'Zip' || labelText == 'Zip2' ? 10 : null,
+      maxLength: labelText == 'Price *' || labelText == 'Discount' ? 10 : null,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
-        inputFormatters: labelText == 'Phone Number' || labelText == 'Business Number' || labelText == 'Zip'? <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ]: [],
+      keyboardType: labelText == 'Price' ? TextInputType.number: TextInputType.text,
+      inputFormatters: labelText == 'Price *' || labelText == 'Discount' ? <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly
+      ]: [],
       // obscureText: labelText == 'Password' ? true : false,
       validator: (value){
         switch(labelText){
@@ -31,24 +32,16 @@ class CustomerTextField extends StatelessWidget {
               return 'Name cannot be blank';
             }
             return null;
-          case 'Email':
-            if(value.isNotEmpty && !Constants.emailRegExp.hasMatch(value)){
-              return 'Enter valid email';
+          case 'Price *':
+            if(value.isEmpty){
+              return 'Price cannot be blank';
             }
+            _price = int.parse(value);
+            print('price ===> $_price');
             return null;
-          case 'Phone Number':
-            if(value.isNotEmpty && value.length < 10){
-              return 'Enter valid phone number';
-            }
-            return null;
-          case 'Zip':
-            if(value.isNotEmpty && value.length < 6){
-              return 'Enter valid Zip code';
-            }
-            return null;
-          case 'Zip2':
-            if(value.isNotEmpty && value.length < 6){
-              return 'Enter valid Zip code';
+          case 'Discount':
+            if(value.isNotEmpty && _price != null && int.parse(value) > _price){
+              return 'Discount cannot be more than price';
             }
             return null;
           default:
@@ -58,7 +51,7 @@ class CustomerTextField extends StatelessWidget {
       decoration: InputDecoration(
           isDense: true,
           counterText: '',
-          labelText: labelText == 'Zip2' ? 'Zip' : labelText,
+          labelText: labelText,
           errorStyle: TextStyle(color: Colors.red,fontWeight: FontWeight.w500,fontSize: _fontSize),
           labelStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500,fontSize: _fontSize),
           hintStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500,fontSize: _fontSize),

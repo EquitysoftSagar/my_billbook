@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/style/images.dart';
 import 'package:my_billbook/ui/login_text_field.dart';
@@ -14,7 +15,6 @@ class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   FirebaseAuth _firebaseAuth;
 
@@ -23,7 +23,6 @@ class LoginPage extends StatelessWidget {
     _emailController.text = 'smeetpanchal857@gmail.com';
     _passwordController.text = '123456';
     return Scaffold(
-      key: _scaffoldKey,
       body: Center(
         child: SingleChildScrollView(
           child: Form(
@@ -114,44 +113,14 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void onLoginTap(BuildContext context) {
+  void onLoginTap(BuildContext context) async {
     if (_formKey.currentState.validate()) {
-      authenticateUser(context);
-    }
-  }
-
-  void authenticateUser(BuildContext context) async {
-    if (!await isInternetConnected()) {
-      snackBarAlert(_scaffoldKey, 'No Internet Connection');
-    } else {
       showProgress(context);
-      try {
-        _firebaseAuth = FirebaseAuth.instance;
-        var _result = await _firebaseAuth.signInWithEmailAndPassword(
-            email: _emailController.text, password: _passwordController.text);
-        print('token ===> ${_result.user.uid}');
-        await SaveValue.string(Keys.userId, _result.user.uid);
-        Constants.userId = _result.user.uid;
-        Navigator.pop(context);
+      var _result = await FirebaseService.signIn(
+          _emailController.text, _passwordController.text);
+      Navigator.pop(context);
+      if (_result) {
         navigateTo(context, HomePage());
-      } on FirebaseAuthException catch (error) {
-        Navigator.pop(context);
-        print('error code ==> ${error.code}');
-        if (error.code == 'user-not-found') {
-          snackBarAlert(_scaffoldKey, 'User is not found with this email');
-        } else if (error.code == 'email-already-in-use') {
-          snackBarAlert(
-              _scaffoldKey, 'The account already exists for that email.');
-        } else if (error.code == 'wrong-password') {
-          snackBarAlert(_scaffoldKey, 'Password is wrong');
-        } else if (error.code == 'too-many-requests') {
-          snackBarAlert(_scaffoldKey, 'too-many-requests try again after some time');
-        }
-
-      } catch (e) {
-        Navigator.pop(context);
-        snackBarAlert(_scaffoldKey, 'something went wrong try again later');
-        print('error on Login ===> $e');
       }
     }
   }

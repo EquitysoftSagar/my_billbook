@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'address.dart';
 
 class Customer {
@@ -9,6 +11,9 @@ class Customer {
   Address address;
   Address shippingAddress;
   String userId;
+  Timestamp updatedAt;
+  Timestamp createdAt;
+  bool isTrash;
 
   Customer(
       {this.name,
@@ -18,7 +23,11 @@ class Customer {
         this.additionalInformation,
         this.address,
         this.shippingAddress,
-      this.userId});
+      this.userId,
+      this.createdAt,
+      this.updatedAt,
+        this.isTrash
+      });
 
   Customer.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -32,6 +41,9 @@ class Customer {
     shippingAddress = json['shipping_address'] != null
         ? new Address.fromJson(json['shipping_address'])
         : null;
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    isTrash = json['is_trash'];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +60,9 @@ class Customer {
     if (this.shippingAddress != null) {
       data['shipping_address'] = this.shippingAddress.toJson();
     }
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['is_trash'] = this.isTrash;
     return data;
   }
 }

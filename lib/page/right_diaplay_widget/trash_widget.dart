@@ -4,23 +4,41 @@ import 'package:my_billbook/style/colors.dart';
 import 'package:provider/provider.dart';
 
 class TrashWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // final _provider = Provider.of<HomePageProvider>(context);
-    return  Container(
+    return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Trash',
-            style: TextStyle(
-                color: MyColors.invoiceTxt,
-                fontWeight: FontWeight.w700,
-                fontSize: 25.0),
+          Row(
+            children: [
+              Text(
+                'Trash',
+                style: TextStyle(
+                    color: MyColors.invoiceTxt,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 25.0),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              RaisedButton(
+                onPressed: () {},
+                color: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  'Empty Trash',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
           ),
-          Flexible(
+          /*Flexible(
             child: Container(
               width: double.infinity,
               margin: EdgeInsets.symmetric(vertical: 30),
@@ -36,7 +54,9 @@ class TrashWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Expanded(
                         flex: 1,
                         child: Text(
@@ -92,7 +112,9 @@ class TrashWidget extends StatelessWidget {
                               fontSize: 15.0),
                         ),
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                     ],
                   ),
                   Divider(
@@ -102,7 +124,7 @@ class TrashWidget extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          )*/
         ],
       ),
     );

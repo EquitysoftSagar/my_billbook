@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_billbook/dialog/progress_dialog.dart';
 
 void navigateTo<T>(BuildContext context, Widget widget,
@@ -16,57 +17,32 @@ void showProgress(BuildContext context /*String title*/) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => Center(child: CircularProgressIndicator( backgroundColor: Colors.white,)),
+    builder: (context) => Center(
+        child: CircularProgressIndicator(
+      backgroundColor: Colors.white,
+    )),
   );
 }
 
-snackBarAlert(GlobalKey<ScaffoldState> scaffoldKey, String message) {
-  scaffoldKey.currentState.showSnackBar(SnackBar(
-    content: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-          decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(color: Colors.black26,blurRadius: 10)
-            ]
-          ),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-    backgroundColor: Colors.transparent,
-  ));
+void toastError(
+  String message,
+) {
+  Fluttertoast.showToast(
+      msg: message,
+      timeInSecForIosWeb: 2,
+      fontSize: 25,
+      webBgColor: "linear-gradient(to right, #DC1C13, #EA4C46)",
+  );
 }
-snackBarSuccess(GlobalKey<ScaffoldState> scaffoldKey, String message) {
-  scaffoldKey.currentState.showSnackBar(SnackBar(
-    content: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-          decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(color: Colors.black26,blurRadius: 10)
-              ]
-          ),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-    backgroundColor: Colors.transparent,
-  ));
+
+void toastSuccess(
+  String message,
+) {
+  Fluttertoast.showToast(
+      msg: message,
+      timeInSecForIosWeb: 2,
+      fontSize: 25,
+      textColor: Colors.white);
 }
 
 Future<bool> isInternetConnected() async {

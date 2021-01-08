@@ -1,23 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/add_customer_dialog.dart';
+import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/list_widget/customer_widget_list.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
-import 'package:my_billbook/util/my_shared_preference.dart';
 
+// ignore: must_be_immutable
 class CustomerWidget extends StatelessWidget {
-  
-  FirebaseFirestore _firebaseFirestore;
+
+  BuildContext _context;
+
   @override
   Widget build(BuildContext context) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+    _context = context;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(context: context,builder: (context) => AddCustomerDialog());
+          showDialog(
+              context: context, builder: (context) => AddCustomerDialog(forEdit: false,));
         },
         child: Icon(Icons.add),
       ),
@@ -36,7 +38,7 @@ class CustomerWidget extends StatelessWidget {
             Flexible(
               child: Container(
                 width: double.infinity,
-                margin: EdgeInsets.only(top: 30,bottom: 70),
+                margin: EdgeInsets.only(top: 30, bottom: 70),
                 padding: EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -75,33 +77,37 @@ class CustomerWidget extends StatelessWidget {
                       height: 1,
                     ),
                     StreamBuilder(
-                      stream: _firebaseFirestore.collection('customer').where('user_id',isEqualTo: Constants.userId).snapshots(),
-                        builder: (context ,AsyncSnapshot<QuerySnapshot> snap){
-                      if(snap.connectionState == ConnectionState.waiting){
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }else if(snap.data.docs.length == 0){
-                        return Text(
-                          'No Customer',
-                          style: TextStyle(
-                              color: MyColors.invoiceTxt,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20.0),
-                        );
-                      }else{
-                        return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (BuildContext context, int index) {
-                                return CustomerListWidget(
-                                  index: index,
-                                  customer: Customer.fromJson(snap.data.docs[index].data()),
-                                );
-                              },
-                              itemCount: snap.data.docs.length,
-                            ));
-                      }
-                    })
+                        stream: FirebaseService.getCustomer(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot> snap) {
+                          if (snap.connectionState == ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snap.data.docs.length == 0) {
+                            return Text(
+                              'No Customer',
+                              style: TextStyle(
+                                  color: MyColors.invoiceTxt,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20.0),
+                            );
+                          } else {
+                            return Expanded(
+                                child: ListView.builder(
+                                  itemBuilder: (BuildContext context,
+                                      int index) {
+                                    return CustomerListWidget(
+                                      index: index,
+                                      customer: Customer.fromJson(
+                                          snap.data.docs[index].data()),
+                                      id: snap.data.docs[index].id,
+                                      deleteFunction: deleteCustomer,
+                                    );
+                                  },
+                                  itemCount: snap.data.docs.length,
+                                ));
+                          }
+                        })
                   ],
                 ),
               ),
@@ -111,5 +117,9 @@ class CustomerWidget extends StatelessWidget {
       ),
     );
   }
-  
+  void deleteCustomer(String id)async{
+    showProgress(_context);
+    await FirebaseService.deleteCustomer(id);
+    Navigator.pop(_context);
+  }
 }

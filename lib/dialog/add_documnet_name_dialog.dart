@@ -114,7 +114,6 @@ class AddDocumentNameDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
                   RaisedButton(
                     onPressed: () {
                       Navigator.pop(context);
