@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:my_billbook/dialog/progress_dialog.dart';
 
 void navigateTo<T>(BuildContext context, Widget widget,
@@ -28,10 +29,10 @@ void toastError(
   String message,
 ) {
   Fluttertoast.showToast(
-      msg: message,
-      timeInSecForIosWeb: 2,
-      fontSize: 25,
-      webBgColor: "linear-gradient(to right, #DC1C13, #EA4C46)",
+    msg: message,
+    timeInSecForIosWeb: 2,
+    fontSize: 25,
+    webBgColor: "linear-gradient(to right, #DC1C13, #EA4C46)",
   );
 }
 
@@ -53,4 +54,12 @@ Future<bool> isInternetConnected() async {
     return true;
   }
   return false;
+}
+
+Future<String> getDateFromDatePicker(BuildContext context,/*DateTime initialDate*/) async {
+  return DateFormat('dd-MM-yyyy').format(await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1999),
+      lastDate: DateTime(2025)));
 }

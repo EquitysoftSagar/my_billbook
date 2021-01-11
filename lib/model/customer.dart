@@ -14,6 +14,7 @@ class Customer {
   Timestamp updatedAt;
   Timestamp createdAt;
   bool isTrash;
+  int status;
 
   Customer(
       {this.name,
@@ -26,7 +27,8 @@ class Customer {
       this.userId,
       this.createdAt,
       this.updatedAt,
-        this.isTrash
+        this.isTrash,
+        this.status
       });
 
   Customer.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class Customer {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     isTrash = json['is_trash'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +66,7 @@ class Customer {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['is_trash'] = this.isTrash;
+    data['status'] = this.status;
     return data;
   }
 }

@@ -113,6 +113,7 @@ class ItemWidget extends StatelessWidget {
                                   itemBuilder: (BuildContext context, int index) {
                                     return ItemListWidget(
                                       index: index,
+                                      isInvoiceList: false,
                                       item: Item.fromJson(snap.data.docs[index].data()),
                                       id: snap.data.docs[index].id,
                                       deleteFunction: deleteItem,

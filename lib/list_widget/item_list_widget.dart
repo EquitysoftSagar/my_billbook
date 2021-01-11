@@ -9,8 +9,9 @@ class ItemListWidget extends StatelessWidget {
   final Item item;
   final String id;
   final Function deleteFunction;
+  final bool isInvoiceList;
 
-  const ItemListWidget({Key key, this.index,this.item,this.id,this.deleteFunction}) : super(key: key);
+  const ItemListWidget({Key key, this.index,this.item,this.id,this.deleteFunction,this.isInvoiceList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,15 @@ class ItemListWidget extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontSize: 15.0),
               ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(item.price.toString(),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      color: MyColors.invoiceTxt,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15.0)),
             ),
             Expanded(
               flex: 1,

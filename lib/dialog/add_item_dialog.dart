@@ -146,6 +146,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     i.createdAt =  widget.forEdit ? widget.item.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     i.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     i.userId = firebaseUser.uid;
+    i.status = 1;
 
       showProgress(context);
       var _result = widget.forEdit ? await FirebaseService.editItem(widget.id,i) : await FirebaseService.addItem(i);

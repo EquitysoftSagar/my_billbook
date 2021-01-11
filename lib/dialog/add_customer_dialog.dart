@@ -94,6 +94,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
         ),
         child: Container(
           width: 400,
+          height: 500,
           padding: EdgeInsets.only(bottom: 15,),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -236,6 +237,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     c.userId = firebaseUser.uid;
     c.createdAt = widget.forEdit ? widget.customer.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     c.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+    c.status = 1;
 
     showProgress(context);
     var _result = widget.forEdit ? await FirebaseService.editCustomer(widget.id,c) : await FirebaseService.addCustomer(c);

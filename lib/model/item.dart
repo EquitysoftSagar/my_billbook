@@ -10,6 +10,7 @@ class Item {
   Timestamp updatedAt;
   Timestamp createdAt;
   bool isTrash;
+  int status;
 
   Item(
       {this.name,
@@ -19,7 +20,9 @@ class Item {
         this.description,
         this.userId,
       this.updatedAt,
-      this.createdAt});
+      this.createdAt,
+        this.status
+      });
 
   Item.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -31,6 +34,7 @@ class Item {
     updatedAt = json['updated_at'];
     userId = json['user_id'];
     isTrash = json['is_trash'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +48,7 @@ class Item {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['is_trash'] = this.isTrash;
+    data['status'] = this.status;
     return data;
   }
 }

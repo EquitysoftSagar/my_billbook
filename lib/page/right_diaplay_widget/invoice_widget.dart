@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/list_widget/invoice_list_widget.dart';
+import 'package:my_billbook/page/right_diaplay_widget/add_invoice_widget.dart';
+import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:my_billbook/ui/search_text_field.dart';
+import 'package:provider/provider.dart';
 
 class InvoiceWidget extends StatelessWidget {
 
   final String title;
+  final _searchController = TextEditingController();
 
-  const InvoiceWidget({Key key, this.title}) : super(key: key);
+  InvoiceWidget({Key key, this.title,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _provider = Provider.of<HomePageProvider>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _provider.rideSideWidget = AddInvoiceWidget(provider: _provider,);
+        },
         child: Icon(Icons.add),
       ),
       body: Container(
@@ -20,12 +28,20 @@ class InvoiceWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Invoice',
-              style: TextStyle(
-                  color: MyColors.invoiceTxt,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 25.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Invoice',
+                  style: TextStyle(
+                      color: MyColors.invoiceTxt,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 25.0),
+                ),
+                SearchTextField(
+                  controller: _searchController,
+                )
+              ],
             ),
             Flexible(
               child: Container(
