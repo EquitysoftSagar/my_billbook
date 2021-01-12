@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'address.dart';
+import 'package:my_billbook/model/address.dart';
 
 class Customer {
   String name;
@@ -8,8 +7,8 @@ class Customer {
   int phoneNumber;
   int businessNumber;
   String additionalInformation;
-  Address address;
-  Address shippingAddress;
+  AddressModel address;
+  AddressModel shippingAddress;
   String userId;
   Timestamp updatedAt;
   Timestamp createdAt;
@@ -39,9 +38,9 @@ class Customer {
     businessNumber = json['business_number'];
     additionalInformation = json['additional_information'];
     address =
-    json['address'] != null ? new Address.fromJson(json['address']) : null;
+    json['address'] != null ? new AddressModel.fromJson(json['address']) : null;
     shippingAddress = json['shipping_address'] != null
-        ? new Address.fromJson(json['shipping_address'])
+        ? new AddressModel.fromJson(json['shipping_address'])
         : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

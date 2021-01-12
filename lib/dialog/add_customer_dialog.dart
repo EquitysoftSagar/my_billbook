@@ -133,7 +133,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
                         CustomerTextField(controller: _businessNumberController,labelText: 'Business Number',),SizedBox(height: 20,),
                         CustomerTextField(controller: _additionalInformationController,labelText: 'Additional information',),SizedBox(height: 20,),
                         Text(
-                          'Address',
+                          'AddressModel',
                           style: TextStyle(
                               color: MyColors.invoiceTxt,
                               fontSize: 20,
@@ -141,13 +141,13 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
                         ),
                         SizedBox(height: 20,),
                         CustomerTextField(controller: _address1Controller,labelText: 'Address 1',),SizedBox(height: 20,),
-                        CustomerTextField(controller: _address2Controller,labelText: 'Address 2',),SizedBox(height: 20,),
+                        CustomerTextField(controller: _address2Controller,labelText: 'Address1 2',),SizedBox(height: 20,),
                         CustomerTextField(controller: _cityController,labelText: 'City',),SizedBox(height: 20,),
                         CustomerTextField(controller: _stateController,labelText: 'State',),SizedBox(height: 20,),
                         CustomerTextField(controller: _zipController,labelText: 'Zip',),SizedBox(height: 20,),
                         CustomerTextField(controller: _countryController,labelText: 'Country',),SizedBox(height: 20,),
                         Text(
-                          'Shipping Address',
+                          'Shipping AddressModel',
                           style: TextStyle(
                               color: MyColors.invoiceTxt,
                               fontSize: 20,
@@ -207,7 +207,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
 
 
   void addEditCustomer(BuildContext context)async{
-    var a = Address();
+    var a = AddressModel();
 
     a.address1 = _address1Controller.text;
     a.address2 = _address2Controller.text;
@@ -216,7 +216,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     a.zip = _zipController.text.isEmpty ? 0 : int.parse(_zipController.text);
     a.country = _countryController.text;
 
-    var sa = Address();
+    var sa = AddressModel();
 
     sa.address1 = _address1ShippingController.text;
     sa.address2 = _address2ShippingController.text;

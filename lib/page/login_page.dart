@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/model/user.dart';
+import 'package:my_billbook/page/sign_up_page.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/style/images.dart';
 import 'package:my_billbook/ui/login_text_field.dart';
@@ -36,23 +38,11 @@ class LoginPage extends StatelessWidget {
                   width: 150,
                   fit: BoxFit.cover,
                 ),
-                SizedBox(
-                  height: 80,
-                ),
-                LoginTextField(
-                  controller: _emailController,
-                  labelText: 'Email',
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                LoginTextField(
-                  controller: _passwordController,
-                  labelText: 'Password',
-                ),
-                SizedBox(
-                  height: 30,
-                ),
+                SizedBox(height: 80,),
+                LoginTextField(controller: _emailController, labelText: 'Email',),
+                SizedBox(height: 20,),
+                LoginTextField(controller: _passwordController, labelText: 'Password',),
+                SizedBox(height: 30,),
                 FlatButton(
                   onPressed: () {
                     onLoginTap(context);
@@ -67,9 +57,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   color: MyColors.accent,
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20,),
                 FlatButton(
                   onPressed: () {},
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -93,7 +81,9 @@ class LoginPage extends StatelessWidget {
                           fontWeight: FontWeight.w400),
                     ),
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: (){
+                        onSignUpTap(context);
+                      },
                       minWidth: 70,
                       padding: EdgeInsets.zero,
                       child: Text(
@@ -116,12 +106,15 @@ class LoginPage extends StatelessWidget {
   void onLoginTap(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       showProgress(context);
-      var _result = await FirebaseService.signIn(
-          _emailController.text, _passwordController.text);
+      var _result = await FirebaseService.signIn(_emailController.text,_passwordController.text);
       Navigator.pop(context);
       if (_result) {
         navigateTo(context, HomePage());
       }
     }
+  }
+
+  void onSignUpTap(BuildContext context) {
+    navigateTo(context, SignUpPage());
   }
 }

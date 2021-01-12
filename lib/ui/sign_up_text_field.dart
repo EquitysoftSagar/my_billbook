@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/util/constants.dart';
 
-class LoginTextField extends StatelessWidget {
-
+class SignUpTextField extends StatelessWidget {
   final String labelText;
-  final FocusNode focusNode;
+  // final FocusNode focusNode;
   final TextEditingController controller;
   final _borderRadius = 5.0;
   final _borderWidth = 1.5;
 
-  const LoginTextField({Key key, this.labelText,this.controller,this.focusNode}) : super(key: key);
+  const SignUpTextField({Key key, this.labelText, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +18,25 @@ class LoginTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
-        keyboardType: TextInputType.text,
+        // keyboardType: TextInputType.text,
         obscureText: labelText == 'Password' ? true : false,
         validator: (value){
           switch(labelText){
+            case 'FirstName':
+              if(value.isEmpty){
+                return 'Please enter your password';
+              }
+              return null;
             case 'Email':
               if(value.isEmpty){
                 return 'Please enter your email';
+              }else if(!Constants.emailRegExp.hasMatch(value)){
+                return 'Please enter valid email';
+              }
+              return null;
+            case 'Invoice display email':
+              if(value.isEmpty){
+                return 'Please enter your invoice email';
               }else if(!Constants.emailRegExp.hasMatch(value)){
                 return 'Please enter valid email';
               }
@@ -42,11 +53,11 @@ class LoginTextField extends StatelessWidget {
         decoration: InputDecoration(
             isDense: true,
             counterText: '',
-            // labelText: labelText,
+            labelText: labelText,
             errorStyle: TextStyle(color: Colors.red,fontWeight: FontWeight.w500),
             labelStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500),
             hintStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500),
-            hintText: labelText,
+            // hintText: labelText,
             contentPadding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(_borderRadius),

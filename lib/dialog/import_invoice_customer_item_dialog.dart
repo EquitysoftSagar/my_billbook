@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/add_customer_dialog.dart';
 import 'package:my_billbook/dialog/add_item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
-import 'package:my_billbook/list_widget/add_invoice_list_widget.dart';
+import 'package:my_billbook/list_widget/import_customer_item_list_widget.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/item.dart';
+import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/methods.dart';
 
-class AddInvoiceCustomerDialog extends StatelessWidget {
+class ImportCustomerItemDialog extends StatelessWidget {
 
   final String headerTitle;
+  BuildContext context;
 
-  const AddInvoiceCustomerDialog({Key key, this.headerTitle}) : super(key: key);
+  ImportCustomerItemDialog({Key key, this.headerTitle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return Dialog(
         insetAnimationDuration: Duration(seconds: 8),
         insetAnimationCurve: Curves.bounceInOut,
@@ -69,10 +71,11 @@ class AddInvoiceCustomerDialog extends StatelessWidget {
                         return ListView.builder(
                           itemBuilder: (BuildContext context,
                               int index) {
-                            return AddInvoiceListWidget(
+                            return InvoiceCustomerItemImportListWidget(
                              isCustomer: headerTitle == 'Customer List' ? true : false ,
                               customer: headerTitle == 'Customer List' ? Customer.fromJson(snap.data.docs[index].data()) :null,
                               item: headerTitle == 'Items List' ? Item.fromJson(snap.data.docs[index].data()) :null,
+                              onImport: onImport,
                             );
                           },
                           itemCount: snap.data.docs.length,
@@ -81,19 +84,11 @@ class AddInvoiceCustomerDialog extends StatelessWidget {
                     }),
               ),
               SizedBox(height: 20,),
-              Row(
-                children: [
-                  SizedBox(width: 10,),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      showDialog(context: context,builder: (context) =>  headerTitle == 'Customer List' ? AddCustomerDialog(forEdit: false,): AddItemDialog(forEdit: false,));
-                    },
-                    child: Text('Add New'),
-                    textColor: MyColors.accent,
-                  ),
-                  Spacer(),
-                  RaisedButton(
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding:  EdgeInsets.only(right: 20),
+                  child: RaisedButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -101,11 +96,36 @@ class AddInvoiceCustomerDialog extends StatelessWidget {
                     color: Colors.white,
                     textColor: Colors.black,
                   ),
-                  SizedBox(width: 10,),
-                ],
-              )
+                ),
+              ),
+              // Row(
+              //   children: [
+              //     SizedBox(width: 10,),
+              //     FlatButton(
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //         showDialog(context: context,builder: (context) =>  headerTitle == 'Customer List' ? AddCustomerDialog(forEdit: false,): AddItemDialog(forEdit: false,fromInvoice: true,));
+              //       },
+              //       child: Text('Add New'),
+              //       textColor: MyColors.accent,
+              //     ),
+              //     Spacer(),
+              //
+              //     SizedBox(width: 10,),
+              //   ],
+              // )
             ],
           ),
         ));
+  }
+
+  void onImport(Item item,Customer customer){
+    if(customer != null){
+      // provider.addInvoiceCustomer = customer;\
+      Navigator.pop(context,customer);
+    }else{
+      // provider.addInvoiceItem = item;
+      Navigator.pop(context,item);
+    }
   }
 }

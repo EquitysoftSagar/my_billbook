@@ -18,7 +18,7 @@ class ItemWidget extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(context: context,builder: (context) => AddItemDialog(forEdit: false,));
+          showDialog(context: context,builder: (context) => AddItemDialog(forEdit: false,fromInvoice: false,));
         },
         child: Icon(Icons.add),
       ),
@@ -113,7 +113,6 @@ class ItemWidget extends StatelessWidget {
                                   itemBuilder: (BuildContext context, int index) {
                                     return ItemListWidget(
                                       index: index,
-                                      isInvoiceList: false,
                                       item: Item.fromJson(snap.data.docs[index].data()),
                                       id: snap.data.docs[index].id,
                                       deleteFunction: deleteItem,

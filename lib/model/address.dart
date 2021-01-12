@@ -1,4 +1,4 @@
-class Address {
+class AddressModel {
   String address1;
   String address2;
   String city;
@@ -6,7 +6,7 @@ class Address {
   int zip;
   String country;
 
-  Address(
+  AddressModel(
       {this.address1,
         this.address2,
         this.city,
@@ -14,7 +14,7 @@ class Address {
         this.zip,
         this.country});
 
-  Address.fromJson(Map<String, dynamic> json) {
+  AddressModel.fromJson(Map<String, dynamic> json) {
     address1 = json['address1'];
     address2 = json['address2'];
     city = json['city'];

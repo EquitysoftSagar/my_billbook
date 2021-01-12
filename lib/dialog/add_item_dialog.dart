@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_billbook/dialog/import_invoice_customer_item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/item.dart';
+import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/item_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
@@ -11,8 +13,10 @@ class AddItemDialog extends StatefulWidget {
   final bool forEdit;
   final Item item;
   final String id;
+  final bool fromInvoice;
+  final HomePageProvider provider;
 
-  const AddItemDialog({Key key, this.forEdit, this.item, this.id}) : super(key: key);
+  const AddItemDialog({Key key, this.forEdit, this.item, this.id,this.fromInvoice,this.provider}) : super(key: key);
 
   @override
   _AddItemDialogState createState() => _AddItemDialogState();
@@ -27,10 +31,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   final _discountController = TextEditingController();
 
-  bool _gstIncluded = true;
+  final _quantityController = TextEditingController();
 
   final _forKey = GlobalKey<FormState>();
-
+  Item item = Item();
 
   @override
   void initState() {
@@ -38,9 +42,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     if(widget.forEdit){
       _nameController.text = widget.item.name;
       _priceController.text = widget.item.price == 0 ? '' : widget.item.price.toString();
-      _discountController.text = widget.item.discount == 0 ? '' : widget.item.discount.toString();
       _descriptionController.text = widget.item.description;
-      _gstIncluded = widget.item.gstIncluded;
     }
   }
   @override
@@ -85,21 +87,40 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       SizedBox(height: 20,),
                       ItemTextField(controller: _nameController,labelText: 'Name *',),SizedBox(height: 20,),
                       ItemTextField(controller: _priceController,labelText: 'Price *',),SizedBox(height: 20,),
-                      ItemTextField(controller: _discountController,labelText: 'Discount',),SizedBox(height: 20,),
+                      Visibility(
+                        visible: widget.fromInvoice,
+                        child: Column(
+                          children: [
+                            ItemTextField(controller: _quantityController,labelText: 'Quantity',),SizedBox(height: 20,),
+                            ItemTextField(controller: _discountController,labelText: 'Discount',),SizedBox(height: 20,),
+                          ],
+                        ),
+                      ),
                       ItemTextField(controller: _descriptionController,labelText: 'Description',),SizedBox(height: 20,),
-                      CheckboxListTile(value: _gstIncluded , onChanged: (value) {
-                        setState(() {
-                          _gstIncluded = value;
-                        });
-                      },title: Text('Gst Included')),
+                      /*Visibility(
+                        visible: widget.fromInvoice,
+                        child: CheckboxListTile(value: _gstIncluded , onChanged: (value) {
+                          setState(() {
+                            _gstIncluded = value;
+                          });
+                        },title: Text('Gst Included')),
+                      ),*/
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 20,),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Visibility(
+                    visible: widget.fromInvoice,
+                      child: FlatButton(onPressed: (){
+                        onImportTap(context);
+                      }, child: Text('Import from save items'))),
+                  Spacer(),
                   RaisedButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -131,7 +152,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   void onSaveTap(BuildContext context) {
     if(_forKey.currentState.validate()){
-      addEditItem(context);
+      if(widget.fromInvoice){
+        widget.provider.addInvoiceItem = item;
+        Navigator.pop(context);
+      }else{
+        addEditItem(context);
+      }
     }
   }
 
@@ -140,9 +166,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     i.name = _nameController.text;
     i.price = int.parse(_priceController.text);
-    i.discount = _discountController.text.isEmpty ? 0 : int.parse(_discountController.text);
     i.description = _descriptionController.text;
-    i.gstIncluded = _gstIncluded;
     i.createdAt =  widget.forEdit ? widget.item.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     i.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     i.userId = firebaseUser.uid;
@@ -156,5 +180,16 @@ class _AddItemDialogState extends State<AddItemDialog> {
       }else{
         Navigator.pop(context);
       }
+  }
+
+  void onImportTap(BuildContext context) {
+    showDialog(context: context,builder: (context) => ImportCustomerItemDialog(
+      headerTitle: 'Items List',
+    )).then((value){
+       item = value;
+      _nameController.text = item.name;
+      _priceController.text = item.price.toString();
+      _descriptionController.text = item.description;
+    });
   }
 }

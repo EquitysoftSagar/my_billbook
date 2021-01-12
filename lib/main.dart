@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/page/home_page.dart';
 import 'package:my_billbook/page/login_page.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/util/size_config.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
               ),
             )
           ),
-          home: LoginPage(),
+          home:LoginPage(),
         );
       },
     );

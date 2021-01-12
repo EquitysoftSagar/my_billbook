@@ -5,6 +5,7 @@ import 'package:my_billbook/firebase/collection.dart';
 import 'package:my_billbook/firebase/field.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/item.dart';
+import 'package:my_billbook/model/user.dart';
 import 'package:my_billbook/util/methods.dart';
 
 User firebaseUser;
@@ -19,11 +20,12 @@ class FirebaseService {
     _firebaseFirestore = FirebaseFirestore.instance;
   }
 
-  static Future<bool> signIn(String email,String password)async{
+  static Future<bool> signIn(String email ,String password)async{
     try{
       var _result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       firebaseUser = _result.user;
-      toastSuccess('Login Successfully');
+      await getUser(firebaseUser.uid);
+      toastSuccess('Login successfully');
       return true;
     }on FirebaseAuthException catch (error) {
       print('Firebase login error code ==> ${error.code}');
@@ -42,6 +44,60 @@ class FirebaseService {
     } catch (e) {
       print('Firebase login error ===> $e');
       toastError('Something went wrong in login try again after some time');
+      return false;
+    }
+  }
+
+  static Future<bool> signUp(UserModel user)async{
+    try{
+      var _result = await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      firebaseUser = _result.user;
+      user.id = firebaseUser.uid;
+      await addUser(user);
+      toastSuccess('Sign up successfully');
+      return true;
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        toastError('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        toastError('The account already exists for that email try login');
+      }
+      return false;
+    } catch (e) {
+      toastError('Something went wrong in sing up try again after some time');
+      print('Error on sign up ==> $e');
+      return false;
+    }
+  }
+
+  static void getCurrentUser(){
+    firebaseUser = _firebaseAuth.currentUser;
+  }
+  static bool isLogin(){
+    return _firebaseAuth.currentUser != null ? true : false;
+  }
+
+  //User
+  static Future<bool> addUser(UserModel user)async{
+    try{
+      await _firebaseFirestore.collection(Collection.user).add(user.toJson());
+      // toastSuccess('Login successfully');
+      return true;
+    }catch (e){
+      // toastError('Error when adding user');
+      print('Catch on add user ==>$e');
+      return false;
+    }
+  }
+
+  static Future<bool> getUser(String id)async{
+    try{
+      await _firebaseFirestore.collection(Collection.user).where(Field.id).get();
+      // toastSuccess('Login successfully');
+      return true;
+    }catch (e){
+      // toastError('Error when get user');
+      print('Catch on get user ==>$e');
       return false;
     }
   }
