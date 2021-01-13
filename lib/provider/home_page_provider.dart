@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_billbook/model/customer.dart';
+import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
 
@@ -12,10 +13,11 @@ class HomePageProvider with ChangeNotifier{
   bool _clientSignature = false;
   bool _secondTax = false;
   bool _removeDueDate = false;
+  bool _isInvoiceWidget = false;
   String _recurring = 'None';
   int _taxInclusiveDeductible = 0;
-  List<Item> _invoiceItem = [];
-  List<Customer> _invoiceCustomer = [];
+  List<InvoiceItemModel> _invoiceItem = [];
+  Customer _invoiceCustomer;
 
   Widget get rideSideWidget => _rightSideScreen;
   List<String> get document => _documentList;
@@ -23,18 +25,19 @@ class HomePageProvider with ChangeNotifier{
   bool get signature => _signatureValue;
   bool get clientSignature => _clientSignature;
   bool get secondTax => _secondTax;
+  bool get isInvoiceWidget => _isInvoiceWidget;
   bool get removeDueDate => _removeDueDate;
+  Customer get invoiceCustomer => _invoiceCustomer;
   String get recurring => _recurring;
   int get taxInclusiveDeductible => _taxInclusiveDeductible;
-  List<Item> get invoiceItem => _invoiceItem;
-  List<Customer> get invoiceCustomer => _invoiceCustomer;
+  List<InvoiceItemModel> get invoiceItem => _invoiceItem;
 
-  set invoiceItem(List<Item> list){
+  set invoiceItem(List<InvoiceItemModel> list){
     _invoiceItem = list;
     notifyListeners();
   }
-  set invoiceCustomer(List<Customer> list){
-    _invoiceCustomer = list;
+  set invoiceCustomer(Customer customer){
+    _invoiceCustomer = customer;
     notifyListeners();
   }
   set rideSideWidget(Widget newWidget){
@@ -43,6 +46,10 @@ class HomePageProvider with ChangeNotifier{
   }
   set gstIncluded(bool newValue){
     _gstIncluded = newValue;
+    notifyListeners();
+  }
+  set isInvoiceWidget(bool newValue){
+    _isInvoiceWidget = newValue;
     notifyListeners();
   }
   set removeDueDate(bool newValue){
@@ -73,20 +80,16 @@ class HomePageProvider with ChangeNotifier{
     _documentList.add(doc);
     notifyListeners();
   }
-  set addInvoiceItem(Item item){
+  set addInvoiceItem(InvoiceItemModel item){
     _invoiceItem.add(item);
     notifyListeners();
   }
-  set removeInvoiceItem(Item item){
+  set removeInvoiceItem(InvoiceItemModel item){
     _invoiceItem.remove(item);
     notifyListeners();
   }
-  set addInvoiceCustomer(Customer customer){
-    _invoiceCustomer.add(customer);
-    notifyListeners();
-  }
-  set removeInvoiceCustomer(Customer customer){
-    _invoiceCustomer.remove(customer);
+  void updateInvoiceItem(InvoiceItemModel item,int index){
+    _invoiceItem[index] = (item);
     notifyListeners();
   }
   set deleteDocument(String doc){

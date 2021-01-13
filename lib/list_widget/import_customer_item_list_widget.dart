@@ -18,7 +18,7 @@ class InvoiceCustomerItemImportListWidget extends StatelessWidget {
 
     return ListTile(
       title: Text(isCustomer ? customer.name : item.name,style: TextStyle(color: MyColors.text,fontSize: 15,),),
-      subtitle:Text(isCustomer ? customer.email : item.price.toString(),style: TextStyle(color: MyColors.text,fontSize: 12,),),
+      subtitle:Text(isCustomer ? customer.email : item.price,style: TextStyle(color: MyColors.text,fontSize: 12,),),
       trailing: RaisedButton(
         onPressed: (){
           onImport(item,customer);

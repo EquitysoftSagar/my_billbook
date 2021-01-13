@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/add_customer_dialog.dart';
+import 'package:my_billbook/dialog/customer_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/list_widget/customer_widget_list.dart';
 import 'package:my_billbook/model/customer.dart';
@@ -19,7 +19,7 @@ class CustomerWidget extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
-              context: context, builder: (context) => AddCustomerDialog(forEdit: false,));
+              context: context, builder: (context) => CustomerDialog(forEdit: false,fromInvoice: false,));
         },
         child: Icon(Icons.add),
       ),

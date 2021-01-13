@@ -2,27 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/import_invoice_customer_item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/item_text_field.dart';
+import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 
-class AddItemDialog extends StatefulWidget {
+class ItemDialog extends StatefulWidget {
 
   final bool forEdit;
   final Item item;
+  final InvoiceItemModel invoiceItemModel;
   final String id;
   final bool fromInvoice;
+  final int index;
   final HomePageProvider provider;
 
-  const AddItemDialog({Key key, this.forEdit, this.item, this.id,this.fromInvoice,this.provider}) : super(key: key);
+  const ItemDialog({Key key, this.forEdit, this.item, this.id,this.fromInvoice,this.provider,this.invoiceItemModel,this.index}) : super(key: key);
 
   @override
-  _AddItemDialogState createState() => _AddItemDialogState();
+  _ItemDialogState createState() => _ItemDialogState();
 }
 
-class _AddItemDialogState extends State<AddItemDialog> {
+class _ItemDialogState extends State<ItemDialog> {
   final _nameController = TextEditingController();
 
   final _priceController = TextEditingController();
@@ -34,17 +38,31 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final _quantityController = TextEditingController();
 
   final _forKey = GlobalKey<FormState>();
-  Item item = Item();
+  InvoiceItemModel _invoiceItemModel = InvoiceItemModel();
+
+  int _totalAmount = 0;
 
   @override
   void initState() {
     super.initState();
+    _quantityController.text = 1.toString();
+
     if(widget.forEdit){
-      _nameController.text = widget.item.name;
-      _priceController.text = widget.item.price == 0 ? '' : widget.item.price.toString();
-      _descriptionController.text = widget.item.description;
+      if(widget.fromInvoice){
+        _nameController.text = widget.invoiceItemModel.name;
+            _priceController.text = widget.invoiceItemModel.price;
+            _descriptionController.text = widget.invoiceItemModel.description;
+            _discountController.text = widget.invoiceItemModel.discount;
+            _quantityController.text = widget.invoiceItemModel.quantity;
+            _totalAmount = int.parse( widget.invoiceItemModel.amount);
+      }else{
+        _nameController.text = widget.item.name;
+        _priceController.text = widget.item.price;
+        _descriptionController.text = widget.item.description;
+      }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -86,13 +104,36 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     children: [
                       SizedBox(height: 20,),
                       ItemTextField(controller: _nameController,labelText: 'Name *',),SizedBox(height: 20,),
-                      ItemTextField(controller: _priceController,labelText: 'Price *',),SizedBox(height: 20,),
+                      ItemTextField(controller: _priceController,labelText: 'Price *',onChangedFunction: (value){
+                        onPriceChangedFunction(value);
+                      },
+                      price: _getCalculatedPrice(),),SizedBox(height: 20,),
                       Visibility(
                         visible: widget.fromInvoice,
                         child: Column(
                           children: [
-                            ItemTextField(controller: _quantityController,labelText: 'Quantity',),SizedBox(height: 20,),
-                            ItemTextField(controller: _discountController,labelText: 'Discount',),SizedBox(height: 20,),
+                            ItemTextField(controller: _quantityController,labelText: 'Quantity',onChangedFunction: (value){
+                             onQuantityChangedFunction(value);
+                            },
+                            price: _getCalculatedPrice(),),SizedBox(height: 20,),
+                            ItemTextField(controller: _discountController,labelText: 'Discount',onChangedFunction: (value){
+                              onDiscountChangedFunction(value);
+                            },price:_getCalculatedPrice()),SizedBox(height: 20,),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.blueAccent.withOpacity(0.08),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Amount',style: TextStyle(fontSize: 15,color: MyColors.accent,fontWeight: FontWeight.bold),),
+                                  Text('${Constants.indianCurrencySymbol} $_totalAmount',style: TextStyle(fontSize: 20,color: Colors.green,fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20,),
                           ],
                         ),
                       ),
@@ -153,7 +194,17 @@ class _AddItemDialogState extends State<AddItemDialog> {
   void onSaveTap(BuildContext context) {
     if(_forKey.currentState.validate()){
       if(widget.fromInvoice){
-        widget.provider.addInvoiceItem = item;
+        _invoiceItemModel.name = _nameController.text;
+        _invoiceItemModel.price = _priceController.text;
+        _invoiceItemModel.description = _descriptionController.text;
+        _invoiceItemModel.quantity = _quantityController.text;
+        _invoiceItemModel.discount = _discountController.text;
+        _invoiceItemModel.amount = _totalAmount.toString();
+        if(widget.forEdit){
+          widget.provider.updateInvoiceItem(_invoiceItemModel, widget.index);
+        }else{
+          widget.provider.addInvoiceItem = _invoiceItemModel;
+        }
         Navigator.pop(context);
       }else{
         addEditItem(context);
@@ -165,7 +216,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     var i = Item();
 
     i.name = _nameController.text;
-    i.price = int.parse(_priceController.text);
+    i.price = _priceController.text;
     i.description = _descriptionController.text;
     i.createdAt =  widget.forEdit ? widget.item.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
     i.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
@@ -186,10 +237,47 @@ class _AddItemDialogState extends State<AddItemDialog> {
     showDialog(context: context,builder: (context) => ImportCustomerItemDialog(
       headerTitle: 'Items List',
     )).then((value){
-       item = value;
+      Item item = value;
+
       _nameController.text = item.name;
       _priceController.text = item.price.toString();
       _descriptionController.text = item.description;
+
+       setState(() {
+         _totalAmount = int.parse(item.price);
+       });
     });
+  }
+
+  void onQuantityChangedFunction(value) {
+    setState(() {
+      int _price = _priceController.text.isEmpty ? 0 : int.parse(_priceController.text);
+      int _quantity = _quantityController.text.isEmpty ? 1 : int.parse(value);
+      int _discount = _discountController.text.isEmpty ? 0 : int.parse(_discountController.text);
+      _totalAmount = (_price * _quantity) - _discount;
+    });
+  }
+  void onDiscountChangedFunction(value) {
+    setState(() {
+      int _discount = _discountController.text.isEmpty ? 0 : int.parse(value);
+      int _price = _priceController.text.isEmpty ? 0 : int.parse(_priceController.text);
+      int _quantity = _quantityController.text.isEmpty ? 1 : int.parse(_quantityController.text);
+      _totalAmount = (_price * _quantity) - _discount;
+    });
+  }
+
+  void onPriceChangedFunction(value) {
+    setState(() {
+      int _price = _priceController.text.isEmpty ? 0 : int.parse(value);
+      int _quantity = _quantityController.text.isEmpty ? 1 : int.parse(_quantityController.text);
+      int _discount = _discountController.text.isEmpty ? 0 : int.parse(_discountController.text);
+      _totalAmount = (_price * _quantity) - _discount;
+    });
+  }
+
+  int _getCalculatedPrice(){
+    int _price =  _priceController.text.isEmpty ? 0 : int.parse(_priceController.text);
+    int _quantity =  _quantityController.text.isEmpty ? 1 : int.parse(_quantityController.text);
+    return _price * _quantity;
   }
 }

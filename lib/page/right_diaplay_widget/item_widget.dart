@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/add_item_dialog.dart';
+import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/list_widget/item_list_widget.dart';
 import 'package:my_billbook/model/item.dart';
@@ -18,7 +18,7 @@ class ItemWidget extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(context: context,builder: (context) => AddItemDialog(forEdit: false,fromInvoice: false,));
+          showDialog(context: context,builder: (context) => ItemDialog(forEdit: false,fromInvoice: false,));
         },
         child: Icon(Icons.add),
       ),

@@ -7,4 +7,5 @@ class Constants{
 
 //token
 static String userId = '';
+static String indianCurrencySymbol = '₹';
 }

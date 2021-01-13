@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/add_item_dialog.dart';
+import 'package:my_billbook/dialog/item_dialog.dart';
 
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/style/colors.dart';
@@ -16,7 +16,7 @@ class ItemListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        showDialog(context: context,builder: (context) => AddItemDialog(forEdit: true,item: item,id: id,fromInvoice: false,));
+        showDialog(context: context,builder: (context) => ItemDialog(forEdit: true,item: item,id: id,fromInvoice: false,));
       },
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 10),

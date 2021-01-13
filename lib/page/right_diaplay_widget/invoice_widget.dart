@@ -19,6 +19,7 @@ class InvoiceWidget extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _provider.isInvoiceWidget = true;
           _provider.rideSideWidget = AddInvoiceWidget();
         },
         child: Icon(Icons.add),

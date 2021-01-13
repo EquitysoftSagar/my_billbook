@@ -4,8 +4,8 @@ import 'package:my_billbook/model/address.dart';
 class Customer {
   String name;
   String email;
-  int phoneNumber;
-  int businessNumber;
+  String phoneNumber;
+  String businessNumber;
   String additionalInformation;
   AddressModel address;
   AddressModel shippingAddress;

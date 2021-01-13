@@ -10,21 +10,24 @@ class ItemTextField extends StatelessWidget {
   final _borderRadius = 5.0;
   final _borderWidth = 1.0;
   final _fontSize = 13.0;
-  int _price;
+  final Function onChangedFunction;
+  int price;
 
-  ItemTextField({Key key, this.labelText,this.controller,this.focusNode}) : super(key: key);
+  ItemTextField({Key key, this.labelText,this.controller,this.focusNode,this.onChangedFunction,this.price = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      onChanged: onChangedFunction,
       maxLength: labelText == 'Price *' || labelText == 'Discount' ? 10 : null,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
-      keyboardType: labelText == 'Price' ? TextInputType.number: TextInputType.text,
-      inputFormatters: labelText == 'Price *' || labelText == 'Discount' ? <TextInputFormatter>[
+      // keyboardType: labelText == 'Price' ? TextInputType.number: TextInputType.text,
+      inputFormatters: labelText == 'Price *' || labelText == 'Discount' || labelText == 'Quantity'? <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ]: [],
       // obscureText: labelText == 'Password' ? true : false,
+      autovalidate:labelText == 'Discount'? true : false ,
       validator: (value){
         switch(labelText){
           case 'Name *':
@@ -32,16 +35,19 @@ class ItemTextField extends StatelessWidget {
               return 'Name cannot be blank';
             }
             return null;
+          case 'Discount':
+            if(value.isNotEmpty && price < int.parse(value)){
+              return 'Discount cannot be greater than price';
+            }
+            return null;
+          case 'Quantity':
+            if(value.isEmpty){
+              return 'Please enter quantity';
+            }
+            return null;
           case 'Price *':
             if(value.isEmpty){
               return 'Price cannot be blank';
-            }
-            _price = int.parse(value);
-            print('price ===> $_price');
-            return null;
-          case 'Discount':
-            if(value.isNotEmpty && _price != null && int.parse(value) > _price){
-              return 'Discount cannot be more than price';
             }
             return null;
           default:

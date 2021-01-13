@@ -3,24 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/address.dart';
 import 'package:my_billbook/model/customer.dart';
+import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/customer_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 
+import 'import_invoice_customer_item_dialog.dart';
+
 // ignore: must_be_immutable
-class AddCustomerDialog extends StatefulWidget {
+class CustomerDialog extends StatefulWidget {
 
   final bool forEdit;
   final Customer customer;
   final String id;
+  final bool fromInvoice;
+  final HomePageProvider provider;
 
-  AddCustomerDialog({Key key, this.forEdit,this.customer,this.id}) : super(key: key);
+  CustomerDialog({Key key, this.forEdit,this.customer,this.id,this.fromInvoice,this.provider}) : super(key: key);
 
   @override
-  _AddCustomerDialogState createState() => _AddCustomerDialogState();
+  _CustomerDialogState createState() => _CustomerDialogState();
 }
 
-class _AddCustomerDialogState extends State<AddCustomerDialog> {
+class _CustomerDialogState extends State<CustomerDialog> {
   final _nameController = TextEditingController();
 
   final _emailController = TextEditingController();
@@ -64,22 +69,22 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     if(widget.forEdit){
       _nameController.text = widget.customer.name;
       _emailController.text = widget.customer.email;
-      _phoneNumberController.text = widget.customer.phoneNumber == 0 ? '' : widget.customer.phoneNumber.toString();
-      _businessNumberController.text = widget.customer.businessNumber == 0 ? '' : widget.customer.businessNumber.toString();
+      _phoneNumberController.text = widget.customer.phoneNumber;
+      _businessNumberController.text = widget.customer.businessNumber;
       _additionalInformationController.text = widget.customer.additionalInformation;
 
       _address1Controller.text = widget.customer.address.address1;
       _address2Controller.text = widget.customer.address.address2;
       _cityController.text = widget.customer.address.city;
       _stateController.text = widget.customer.address.state;
-      _zipController.text = widget.customer.address.zip == 0 ? '': widget.customer.address.zip.toString();
+      _zipController.text = widget.customer.address.zip;
       _countryController.text = widget.customer.address.country;
 
       _address1ShippingController.text = widget.customer.shippingAddress.address1;
       _address2ShippingController.text = widget.customer.shippingAddress.address2;
       _cityShippingController.text = widget.customer.shippingAddress.city;
       _stateShippingController.text = widget.customer.shippingAddress.state;
-      _zipShippingController.text = widget.customer.shippingAddress.zip == 0 ? '': widget.customer.shippingAddress.zip.toString();
+      _zipShippingController.text = widget.customer.shippingAddress.zip;
       _countryShippingController.text = widget.customer.shippingAddress.country;
     }
   }
@@ -169,7 +174,13 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
+                  SizedBox(width: 20,),
+                  Visibility(
+                      visible: widget.fromInvoice,
+                      child: FlatButton(onPressed: (){
+                        onImportTap(context);
+                      }, child: Text('Import from save customer'))),
+                  Spacer(),
                   RaisedButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -201,7 +212,45 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
 
   void onSaveTap(BuildContext context) {
     if(_forKey.currentState.validate()){
-      addEditCustomer(context);
+      if(widget.fromInvoice){
+        var a = AddressModel();
+
+        a.address1 = _address1Controller.text;
+        a.address2 = _address2Controller.text;
+        a.city = _cityController.text;
+        a.state = _stateController.text;
+        a.zip = _zipController.text;
+        a.country = _countryController.text;
+
+        var sa = AddressModel();
+
+        sa.address1 = _address1ShippingController.text;
+        sa.address2 = _address2ShippingController.text;
+        sa.city = _cityShippingController.text;
+        sa.state = _stateShippingController.text;
+        sa.country = _countryShippingController.text;
+        sa.zip = _zipShippingController.text;
+
+        var c = Customer();
+
+        c.name = _nameController.text;
+        c.email = _emailController.text;
+        c.additionalInformation = _additionalInformationController.text;
+        c.address = a;
+        c.phoneNumber = _phoneNumberController.text;
+        c.businessNumber = _businessNumberController.text;
+        c.shippingAddress = sa;
+        // c.userId = firebaseUser.uid;
+        // c.createdAt = widget.forEdit ? widget.customer.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+        // c.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+        // c.status = 1;
+
+        widget.provider.invoiceCustomer = c;
+
+        Navigator.pop(context);
+      }else{
+        addEditCustomer(context);
+      }
     }
   }
 
@@ -213,7 +262,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     a.address2 = _address2Controller.text;
     a.city = _cityController.text;
     a.state = _stateController.text;
-    a.zip = _zipController.text.isEmpty ? 0 : int.parse(_zipController.text);
+    a.zip = _zipController.text;
     a.country = _countryController.text;
 
     var sa = AddressModel();
@@ -223,7 +272,7 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     sa.city = _cityShippingController.text;
     sa.state = _stateShippingController.text;
     sa.country = _countryShippingController.text;
-    sa.zip = _zipShippingController.text.isEmpty ? 0 : int.parse(_zipShippingController.text);
+    sa.zip = _zipShippingController.text;
 
     var c = Customer();
 
@@ -231,8 +280,8 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     c.email = _emailController.text;
     c.additionalInformation = _additionalInformationController.text;
     c.address = a;
-    c.phoneNumber = _phoneNumberController.text.isEmpty ? 0 : int.parse(_phoneNumberController.text);
-    c.businessNumber = _businessNumberController.text.isEmpty ? 0 : int.parse(_businessNumberController.text);
+    c.phoneNumber = _phoneNumberController.text;
+    c.businessNumber = _businessNumberController.text;
     c.shippingAddress = sa;
     c.userId = firebaseUser.uid;
     c.createdAt = widget.forEdit ? widget.customer.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
@@ -247,5 +296,36 @@ class _AddCustomerDialogState extends State<AddCustomerDialog> {
     }else{
       Navigator.pop(context);
     }
+  }
+
+  void onImportTap(BuildContext context) {
+    showDialog(context: context,builder: (context) => ImportCustomerItemDialog(
+      headerTitle: 'Customer List',
+    )).then((value){
+      Customer customer = value;
+
+      _nameController.text = customer.name;
+      _emailController.text = customer.email;
+      _businessNumberController.text = customer.businessNumber;
+      _phoneNumberController.text = customer.phoneNumber;
+      _additionalInformationController.text = customer.additionalInformation;
+
+      AddressModel address = customer.address;
+
+      _address1Controller.text = address.address1;
+      _address2Controller.text = address.address2;
+      _cityController.text = address.city;
+      _stateController.text = address.state;
+      _countryController.text = address.country;
+
+      AddressModel shippingAddress = customer.shippingAddress;
+
+      _address1ShippingController.text = shippingAddress.address1;
+      _address2ShippingController.text = shippingAddress.address2;
+      _cityShippingController.text = shippingAddress.city;
+      _stateShippingController.text = shippingAddress.state;
+      _countryShippingController.text = shippingAddress.country;
+
+    });
   }
 }

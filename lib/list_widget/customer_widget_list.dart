@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/add_customer_dialog.dart';
+import 'package:my_billbook/dialog/customer_dialog.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/style/colors.dart';
 
@@ -16,7 +16,7 @@ class CustomerListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        showDialog(context: context,builder: (context) => AddCustomerDialog(forEdit: true,customer: customer,id: id,));
+        showDialog(context: context,builder: (context) => CustomerDialog(forEdit: true,customer: customer,id: id,fromInvoice: false,));
       },
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 10),

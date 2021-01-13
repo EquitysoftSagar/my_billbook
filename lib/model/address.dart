@@ -3,7 +3,7 @@ class AddressModel {
   String address2;
   String city;
   String state;
-  int zip;
+  String zip;
   String country;
 
   AddressModel(
