@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:my_billbook/util/methods.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class AddDocumentNameDialog extends StatelessWidget {
+class AddDocumentDialog extends StatelessWidget {
   final _borderRadius = 5.0;
   final _borderWidth = 1.5;
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final provider;
 
   final String title;
 
-  AddDocumentNameDialog({Key key, this.title, this.provider}) : super(key: key);
+  AddDocumentDialog({Key key, this.title,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     _controller.text = title;
     return Dialog(
         insetAnimationDuration: Duration(seconds: 8),
@@ -145,7 +146,21 @@ class AddDocumentNameDialog extends StatelessWidget {
 
   void onSaveTap(BuildContext context) {
     if (_formKey.currentState.validate()) {
-      provider.addDocument = _controller.text;
+      // provider.addDocument = _controller.text;
+      // Navigator.pop(context);
+      addBills(context);
+    }
+  }
+  void addBills(BuildContext context)async{
+    showProgress(context);
+    var b = Bills();
+    b.name = _controller.text;
+    b.userId = firebaseUser.uid;
+    var _result = await FirebaseService.addBills(b);
+    if(_result){
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }else{
       Navigator.pop(context);
     }
   }

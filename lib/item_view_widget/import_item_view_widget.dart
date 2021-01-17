@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/item.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:provider/provider.dart';
 
-class InvoiceCustomerItemImportListWidget extends StatelessWidget {
+class ImportItemViewWidget extends StatelessWidget {
   final bool isCustomer;
   final Customer customer;
   final Item item;
   final Function onImport;
 
-  const InvoiceCustomerItemImportListWidget({Key key,this.isCustomer,this.customer,this.item,this.onImport}) : super(key: key);
+  const ImportItemViewWidget({Key key,this.isCustomer,this.customer,this.item,this.onImport}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

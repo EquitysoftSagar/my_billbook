@@ -3,14 +3,14 @@ import 'package:my_billbook/dialog/customer_dialog.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/style/colors.dart';
 
-class CustomerListWidget extends StatelessWidget {
+class CustomerItemViewWidget extends StatelessWidget {
   final int index;
   final Customer customer;
   final String id;
   final Function deleteFunction;
   final Function editFunction;
 
-  const CustomerListWidget({Key key, this.index,this.customer,this.id,this.deleteFunction,this.editFunction}) : super(key: key);
+  const CustomerItemViewWidget({Key key, this.index,this.customer,this.id,this.deleteFunction,this.editFunction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

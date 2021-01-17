@@ -24,9 +24,17 @@ class InvoiceTextField extends StatelessWidget {
       keyboardType: TextInputType.text,
       obscureText: labelText == 'Password' ? true : false,
       focusNode: labelText == 'Date' || labelText == 'Due on'? AlwaysDisableFocusNode(): null,
-      // validator: (value){
-      //   return 'Error';
-      // },
+      validator: (value){
+        switch(labelText){
+          case 'Invoice #':
+            if(value.isEmpty){
+              return 'Invoice cannot be empty';
+            }
+            return null;
+          default:
+            return null;
+        }
+      },
       decoration: InputDecoration(
           isDense: true,
           counterText: '',
@@ -35,29 +43,11 @@ class InvoiceTextField extends StatelessWidget {
           labelStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500,),
           hintStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500,height: 2),
           hintText: '',
-          // enabled: labelText == 'Date' || labelText == 'Due on'? false : true,
           contentPadding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-          // suffixIcon: labelText == 'Date' || labelText == 'Due on'? InkWell(onTap:(){},child: Icon(Icons.calendar_today)) : null,
           suffix: labelText == 'Date' || labelText == 'Due on'? InkWell(onTap:onSuffixTap,child: Icon(Icons.calendar_today)) : null,
           focusColor: MyColors.accent,
           fillColor: Colors.black.withOpacity(0.05),
           filled: true,
-          // border: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(_borderRadius),
-          //     borderSide: BorderSide(color: MyColors.border,width: _borderWidth)
-          // ),
-          // enabledBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(_borderRadius),
-          //     borderSide: BorderSide(color: MyColors.border,width: _borderWidth)
-          // ),
-          // focusedBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(_borderRadius),
-          //     borderSide: BorderSide(color: MyColors.focusBorder,width: _borderWidth)
-          // ),
-          // errorBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(_borderRadius),
-          //     borderSide: BorderSide(color: Colors.red,width: _borderWidth)
-          // )
       ),
     );
   }

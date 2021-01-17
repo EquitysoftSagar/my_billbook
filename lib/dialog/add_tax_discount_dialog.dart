@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/tax_discount_text_field.dart';
-import 'package:provider/provider.dart';
 
 class AddTaxDiscountDialog extends StatefulWidget {
 

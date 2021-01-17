@@ -3,13 +3,13 @@ import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/util/constants.dart';
 
-class InvoiceItemListWidget extends StatelessWidget {
+class InvoiceItemViewWidget extends StatelessWidget {
   final int index;
   final InvoiceItemModel item;
   final Function removeFunction;
   final Function updateFunction;
 
-  const InvoiceItemListWidget({Key key, this.index, this.item,this.removeFunction,this.updateFunction}) : super(key: key);
+  const InvoiceItemViewWidget({Key key, this.index, this.item,this.removeFunction,this.updateFunction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/import_invoice_customer_item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
@@ -9,6 +8,8 @@ import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/item_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
+
+import 'import_customer_item_dialog.dart';
 
 class ItemDialog extends StatefulWidget {
 
@@ -200,6 +201,7 @@ class _ItemDialogState extends State<ItemDialog> {
         _invoiceItemModel.quantity = _quantityController.text;
         _invoiceItemModel.discount = _discountController.text;
         _invoiceItemModel.amount = _totalAmount.toString();
+        print('Total Amount ==> $_totalAmount');
         if(widget.forEdit){
           widget.provider.updateInvoiceItem(_invoiceItemModel, widget.index);
         }else{

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
@@ -6,8 +7,7 @@ import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
 
 class HomePageProvider with ChangeNotifier{
 
-  Widget _rightSideScreen = InvoiceWidget();
-  List<String> _documentList = ['Invoice'];
+  Widget _rightSideScreen = Container();
   bool _gstIncluded = true;
   bool _signatureValue = false;
   bool _clientSignature = false;
@@ -20,7 +20,6 @@ class HomePageProvider with ChangeNotifier{
   Customer _invoiceCustomer;
 
   Widget get rideSideWidget => _rightSideScreen;
-  List<String> get document => _documentList;
   bool get gstIncluded => _gstIncluded;
   bool get signature => _signatureValue;
   bool get clientSignature => _clientSignature;
@@ -76,10 +75,6 @@ class HomePageProvider with ChangeNotifier{
     _recurring = newValue;
     notifyListeners();
   }
-  set addDocument(String doc){
-    _documentList.add(doc);
-    notifyListeners();
-  }
   set addInvoiceItem(InvoiceItemModel item){
     _invoiceItem.add(item);
     notifyListeners();
@@ -91,11 +86,5 @@ class HomePageProvider with ChangeNotifier{
   void updateInvoiceItem(InvoiceItemModel item,int index){
     _invoiceItem[index] = (item);
     notifyListeners();
-  }
-  set deleteDocument(String doc){
-    if(doc != 'invoice'){
-      _documentList.remove(doc);
-      notifyListeners();
-    }
   }
 }

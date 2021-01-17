@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:my_billbook/util/constants.dart';
 
-class InvoiceListWidget extends StatelessWidget {
+class InvoiceListItemViewWidget extends StatelessWidget {
   final int index;
+  final Documents documents;
 
-  const InvoiceListWidget({Key key, this.index}) : super(key: key);
+  const InvoiceListItemViewWidget({Key key, this.index,this.documents}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -15,7 +19,7 @@ class InvoiceListWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text( // status
-              'Pending',
+              documents.documentStatus,
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: MyColors.invoiceTxt,
@@ -26,7 +30,7 @@ class InvoiceListWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text( // date
-              '07 Jan 2021',
+              DateFormat('dd-MM-yyyy').format(documents.date.toDate()),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: MyColors.invoiceTxt,
@@ -48,7 +52,7 @@ class InvoiceListWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text( // customer
-              'Sagar Panchal',
+              documents.customer.name,
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: MyColors.invoiceTxt,
@@ -59,7 +63,7 @@ class InvoiceListWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text( // amount
-              '13,786',
+              '${Constants.indianCurrencySymbol}${documents.amountDue}',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.green,

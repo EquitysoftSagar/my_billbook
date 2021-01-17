@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_billbook/firebase/collection.dart';
 import 'package:my_billbook/firebase/field.dart';
+import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/model/customer.dart';
+import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/model/user.dart';
 import 'package:my_billbook/util/methods.dart';
@@ -54,6 +56,7 @@ class FirebaseService {
       firebaseUser = _result.user;
       user.id = firebaseUser.uid;
       await addUser(user);
+      await addBills(Bills(name: 'Invoice',userId: firebaseUser.uid));
       toastSuccess('Sign up successfully');
       return true;
     }on FirebaseAuthException catch (e) {
@@ -154,6 +157,7 @@ class FirebaseService {
     }
     return null;
   }
+
   static Future<void> deleteItem(String id)async{
     try{
       await _firebaseFirestore.collection(Collection.item).doc(id).delete();
@@ -196,6 +200,70 @@ class FirebaseService {
     }catch (e){
       toastError('Error when trash item');
       print('Catch on trash item ==>$e');
+      return false;
+    }
+  }
+
+  //bills
+  static Stream<QuerySnapshot> getBills(){
+    try{
+      return _firebaseFirestore.collection(Collection.bills).where(Field.userId,isEqualTo: firebaseUser.uid).snapshots();
+    }catch (e){
+      print('Catch on get bills ==>$e');
+    }
+    return null;
+  }
+
+  static Future<bool> addBills(Bills bills)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).add(bills.toJson());
+      toastSuccess('Bills added successfully');
+      return true;
+    }catch (e){
+      toastError('Error when adding bills');
+      print('Catch on adding bills==>$e');
+      return false;
+    }
+  }
+  static Future<bool> editBills(String id ,Bills bills)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(id).update(bills.toJson());
+      toastSuccess('Update successfully');
+      return true;
+    }catch (e){
+      toastError('Error when updating bills');
+      print('Catch on update bills ==>$e');
+      return false;
+    }
+  }
+
+  static Future<bool> deleteBills(String id)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(id).delete();
+      toastSuccess('Deleted successfully');
+      return true;
+    }catch (e){
+      toastError('Error when deleting bills');
+      print('Catch on get bills ==>$e');
+      return false;
+    }
+  }
+  static Stream<QuerySnapshot> getDocuments(String billId){
+    try{
+      return _firebaseFirestore.collection(Collection.bills).doc(billId).collection(Collection.documents).snapshots();
+    }catch (e){
+      print('Catch on get documents ==>$e');
+    }
+    return null;
+  }
+  static Future<bool> addDocument(String billId, Documents documents)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(billId).collection(Collection.documents).add(documents.toJson());
+      toastSuccess('Document added successfully');
+      return true;
+    }catch (e){
+      toastError('Error when adding document');
+      print('Catch on adding document==>$e');
       return false;
     }
   }

@@ -2,7 +2,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:my_billbook/dialog/progress_dialog.dart';
 
 void navigateTo<T>(BuildContext context, Widget widget,
     {ValueChanged<T> result}) {
@@ -56,10 +55,10 @@ Future<bool> isInternetConnected() async {
   return false;
 }
 
-Future<String> getDateFromDatePicker(BuildContext context,/*DateTime initialDate*/) async {
+Future<String> getDateFromDatePicker(BuildContext context,DateTime initialDate) async {
   return DateFormat('dd-MM-yyyy').format(await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(1999),
       lastDate: DateTime(2025)));
 }

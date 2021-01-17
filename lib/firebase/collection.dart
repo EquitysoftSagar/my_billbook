@@ -3,4 +3,6 @@ class Collection{
   static String item  = 'item';
   static String trash  = 'trash';
   static String user  = 'user';
+  static String bills  = 'bills';
+  static String documents  = 'documents';
 }

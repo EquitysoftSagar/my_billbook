@@ -8,7 +8,7 @@ import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/customer_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 
-import 'import_invoice_customer_item_dialog.dart';
+import 'import_customer_item_dialog.dart';
 
 // ignore: must_be_immutable
 class CustomerDialog extends StatefulWidget {

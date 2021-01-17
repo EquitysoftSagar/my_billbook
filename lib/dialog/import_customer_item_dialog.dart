@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/customer_dialog.dart';
-import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
-import 'package:my_billbook/list_widget/import_customer_item_list_widget.dart';
+import 'package:my_billbook/item_view_widget/import_item_view_widget.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/item.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 
 class ImportCustomerItemDialog extends StatelessWidget {
@@ -71,7 +68,7 @@ class ImportCustomerItemDialog extends StatelessWidget {
                         return ListView.builder(
                           itemBuilder: (BuildContext context,
                               int index) {
-                            return InvoiceCustomerItemImportListWidget(
+                            return ImportItemViewWidget(
                              isCustomer: headerTitle == 'Customer List' ? true : false ,
                               customer: headerTitle == 'Customer List' ? Customer.fromJson(snap.data.docs[index].data()) :null,
                               item: headerTitle == 'Items List' ? Item.fromJson(snap.data.docs[index].data()) :null,
