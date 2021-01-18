@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_billbook/model/address.dart';
 
 class Customer {
+  String id;
   String name;
   String email;
   String phoneNumber;
@@ -12,25 +13,25 @@ class Customer {
   String userId;
   Timestamp updatedAt;
   Timestamp createdAt;
-  bool isTrash;
   int status;
 
   Customer(
       {this.name,
+        this.id,
         this.email,
         this.phoneNumber,
         this.businessNumber,
         this.additionalInformation,
         this.address,
         this.shippingAddress,
-      this.userId,
-      this.createdAt,
-      this.updatedAt,
-        this.isTrash,
-        this.status
+        this.userId,
+        this.createdAt,
+        this.updatedAt,
+        this.status,
       });
 
   Customer.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     email = json['email'];
     userId = json['user_id'];
@@ -44,12 +45,12 @@ class Customer {
         : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    isTrash = json['is_trash'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['email'] = this.email;
     data['user_id'] = this.userId;
@@ -64,8 +65,8 @@ class Customer {
     }
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['is_trash'] = this.isTrash;
     data['status'] = this.status;
+    data['customer_id'] = this.status;
     return data;
   }
 }

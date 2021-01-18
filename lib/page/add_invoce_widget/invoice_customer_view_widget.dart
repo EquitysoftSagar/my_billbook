@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/customer_dialog.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
+import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:provider/provider.dart';
 
-class InvoiceCustomerViewWidget extends StatelessWidget {
+class InvoiceCustomerViewWidget extends StatefulWidget {
+   final Customer customer;
+   final ValueChanged<Customer> onSetCustomer;
+
+   InvoiceCustomerViewWidget({Key key, this.customer,this.onSetCustomer}) : super(key: key);
+
+  @override
+  _InvoiceCustomerViewWidgetState createState() => _InvoiceCustomerViewWidgetState();
+}
+
+class _InvoiceCustomerViewWidgetState extends State<InvoiceCustomerViewWidget> {
+
+  Customer _customer;
+  @override
+  void initState() {
+    super.initState();
+    _customer = widget.customer;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<HomePageProvider>(context);
-    return _provider.invoiceCustomer != null ? _customerView(context,_provider) : InkWell(
+    return _customer != null ? _customerView() : InkWell(
       onTap: () {
         onAddCustomerTap(context);
       },
@@ -48,8 +64,9 @@ class InvoiceCustomerViewWidget extends StatelessWidget {
       ),
     );
   }
-  Widget _customerView(BuildContext context,HomePageProvider provider){
-    var c = provider.invoiceCustomer;
+
+  Widget _customerView(){
+    var c = _customer;
     var a = c.address;
     var sa = c.shippingAddress;
     var _fontSize = 13.0;
@@ -115,7 +132,7 @@ class InvoiceCustomerViewWidget extends StatelessWidget {
         SizedBox(height: 15,),
         RaisedButton(
           onPressed: () {
-            _onCustomerEditTap(context);
+            _onCustomerEditTap();
           },
           child: Text(
             'Edit',
@@ -128,23 +145,33 @@ class InvoiceCustomerViewWidget extends StatelessWidget {
   }
 
   void onAddCustomerTap(BuildContext context) {
-    final _provider = Provider.of<HomePageProvider>(context,listen: false);
     showDialog(
         context: context,
         builder: (context) =>
             CustomerDialog(
               fromInvoice: true,
               forEdit: false,
-              provider: _provider,
-            ));
+            )).then((value){
+      if(value != null){
+        setState(() {
+          _customer = value;
+          widget.onSetCustomer(_customer);
+        });
+      }
+    });
   }
-  void _onCustomerEditTap(BuildContext context) {
-    final _provider = Provider.of<HomePageProvider>(context,listen: false);
+
+  void _onCustomerEditTap() {
     showDialog(context: context,builder: (context) => CustomerDialog(
       fromInvoice: true,
       forEdit: true,
-      customer: _provider.invoiceCustomer,
-      provider: _provider,
-    ));
+      customer: _customer,
+    )).then((value){
+      if(value != null){
+        setState(() {
+          _customer = value;
+        });
+      }
+    });
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/address.dart';
 import 'package:my_billbook/model/customer.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/customer_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
@@ -17,9 +16,8 @@ class CustomerDialog extends StatefulWidget {
   final Customer customer;
   final String id;
   final bool fromInvoice;
-  final HomePageProvider provider;
 
-  CustomerDialog({Key key, this.forEdit,this.customer,this.id,this.fromInvoice,this.provider}) : super(key: key);
+  CustomerDialog({Key key, this.forEdit,this.customer,this.id,this.fromInvoice}) : super(key: key);
 
   @override
   _CustomerDialogState createState() => _CustomerDialogState();
@@ -62,6 +60,8 @@ class _CustomerDialogState extends State<CustomerDialog> {
 
   final _forKey = GlobalKey<FormState>();
 
+  String _customerId;
+
   @override
   void initState() {
     super.initState();
@@ -92,8 +92,6 @@ class _CustomerDialogState extends State<CustomerDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        insetAnimationDuration: Duration(seconds: 8),
-        insetAnimationCurve: Curves.bounceInOut,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -233,6 +231,7 @@ class _CustomerDialogState extends State<CustomerDialog> {
 
         var c = Customer();
 
+        c.id = _customerId;
         c.name = _nameController.text;
         c.email = _emailController.text;
         c.additionalInformation = _additionalInformationController.text;
@@ -244,10 +243,7 @@ class _CustomerDialogState extends State<CustomerDialog> {
         // c.createdAt = widget.forEdit ? widget.customer.createdAt : Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
         // c.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
         // c.status = 1;
-
-        widget.provider.invoiceCustomer = c;
-
-        Navigator.pop(context);
+        Navigator.pop(context,c);
       }else{
         addEditCustomer(context);
       }
@@ -302,30 +298,33 @@ class _CustomerDialogState extends State<CustomerDialog> {
     showDialog(context: context,builder: (context) => ImportCustomerItemDialog(
       headerTitle: 'Customer List',
     )).then((value){
-      Customer customer = value;
+      if(value != null){
+        Customer customer = value;
 
-      _nameController.text = customer.name;
-      _emailController.text = customer.email;
-      _businessNumberController.text = customer.businessNumber;
-      _phoneNumberController.text = customer.phoneNumber;
-      _additionalInformationController.text = customer.additionalInformation;
+        _customerId = customer.id;
+        _nameController.text = customer.name;
+        _emailController.text = customer.email;
+        _businessNumberController.text = customer.businessNumber;
+        _phoneNumberController.text = customer.phoneNumber;
+        _additionalInformationController.text = customer.additionalInformation;
 
-      AddressModel address = customer.address;
+        AddressModel address = customer.address;
 
-      _address1Controller.text = address.address1;
-      _address2Controller.text = address.address2;
-      _cityController.text = address.city;
-      _stateController.text = address.state;
-      _countryController.text = address.country;
+        _address1Controller.text = address.address1;
+        _address2Controller.text = address.address2;
+        _cityController.text = address.city;
+        _stateController.text = address.state;
+        _countryController.text = address.country;
 
-      AddressModel shippingAddress = customer.shippingAddress;
+        AddressModel shippingAddress = customer.shippingAddress;
 
-      _address1ShippingController.text = shippingAddress.address1;
-      _address2ShippingController.text = shippingAddress.address2;
-      _cityShippingController.text = shippingAddress.city;
-      _stateShippingController.text = shippingAddress.state;
-      _countryShippingController.text = shippingAddress.country;
+        _address1ShippingController.text = shippingAddress.address1;
+        _address2ShippingController.text = shippingAddress.address2;
+        _cityShippingController.text = shippingAddress.city;
+        _stateShippingController.text = shippingAddress.state;
+        _countryShippingController.text = shippingAddress.country;
 
+      }
     });
   }
 }

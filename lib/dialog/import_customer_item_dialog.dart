@@ -9,13 +9,11 @@ import 'package:my_billbook/style/colors.dart';
 class ImportCustomerItemDialog extends StatelessWidget {
 
   final String headerTitle;
-  BuildContext context;
 
   ImportCustomerItemDialog({Key key, this.headerTitle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
     return Dialog(
         insetAnimationDuration: Duration(seconds: 8),
         insetAnimationCurve: Curves.bounceInOut,
@@ -70,9 +68,12 @@ class ImportCustomerItemDialog extends StatelessWidget {
                               int index) {
                             return ImportItemViewWidget(
                              isCustomer: headerTitle == 'Customer List' ? true : false ,
+                              id: snap.data.docs[index].id,
                               customer: headerTitle == 'Customer List' ? Customer.fromJson(snap.data.docs[index].data()) :null,
                               item: headerTitle == 'Items List' ? Item.fromJson(snap.data.docs[index].data()) :null,
-                              onImport: onImport,
+                              onImport: (item,customer,id){
+                                onImport(item,customer,context,id);
+                              },
                             );
                           },
                           itemCount: snap.data.docs.length,
@@ -116,12 +117,12 @@ class ImportCustomerItemDialog extends StatelessWidget {
         ));
   }
 
-  void onImport(Item item,Customer customer){
+  void onImport(Item item,Customer customer,BuildContext context,String id){
     if(customer != null){
-      // provider.addInvoiceCustomer = customer;\
+      customer.id = id;
       Navigator.pop(context,customer);
     }else{
-      // provider.addInvoiceItem = item;
+      item.id = id;
       Navigator.pop(context,item);
     }
   }

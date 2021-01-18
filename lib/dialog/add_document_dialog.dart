@@ -146,8 +146,6 @@ class AddDocumentDialog extends StatelessWidget {
 
   void onSaveTap(BuildContext context) {
     if (_formKey.currentState.validate()) {
-      // provider.addDocument = _controller.text;
-      // Navigator.pop(context);
       addBills(context);
     }
   }

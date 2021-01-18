@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/item_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
@@ -18,10 +17,8 @@ class ItemDialog extends StatefulWidget {
   final InvoiceItemModel invoiceItemModel;
   final String id;
   final bool fromInvoice;
-  final int index;
-  final HomePageProvider provider;
 
-  const ItemDialog({Key key, this.forEdit, this.item, this.id,this.fromInvoice,this.provider,this.invoiceItemModel,this.index}) : super(key: key);
+  const ItemDialog({Key key, this.forEdit, this.item, this.id,this.fromInvoice,this.invoiceItemModel}) : super(key: key);
 
   @override
   _ItemDialogState createState() => _ItemDialogState();
@@ -42,6 +39,7 @@ class _ItemDialogState extends State<ItemDialog> {
   InvoiceItemModel _invoiceItemModel = InvoiceItemModel();
 
   int _totalAmount = 0;
+  String _itemId;
 
   @override
   void initState() {
@@ -198,16 +196,11 @@ class _ItemDialogState extends State<ItemDialog> {
         _invoiceItemModel.name = _nameController.text;
         _invoiceItemModel.price = _priceController.text;
         _invoiceItemModel.description = _descriptionController.text;
-        _invoiceItemModel.quantity = _quantityController.text;
-        _invoiceItemModel.discount = _discountController.text;
+        _invoiceItemModel.quantity = _quantityController.text.isEmpty ? '1' :_quantityController.text;
+        _invoiceItemModel.discount = _discountController.text.isEmpty ? '0' : _discountController.text;
         _invoiceItemModel.amount = _totalAmount.toString();
-        print('Total Amount ==> $_totalAmount');
-        if(widget.forEdit){
-          widget.provider.updateInvoiceItem(_invoiceItemModel, widget.index);
-        }else{
-          widget.provider.addInvoiceItem = _invoiceItemModel;
-        }
-        Navigator.pop(context);
+        _invoiceItemModel.id = _itemId;
+        Navigator.pop(context,_invoiceItemModel);
       }else{
         addEditItem(context);
       }
@@ -239,15 +232,17 @@ class _ItemDialogState extends State<ItemDialog> {
     showDialog(context: context,builder: (context) => ImportCustomerItemDialog(
       headerTitle: 'Items List',
     )).then((value){
-      Item item = value;
+      if(value != null){
+        Item item = value;
+        _itemId = item.id;
+        _nameController.text = item.name;
+        _priceController.text = item.price.toString();
+        _descriptionController.text = item.description;
 
-      _nameController.text = item.name;
-      _priceController.text = item.price.toString();
-      _descriptionController.text = item.description;
-
-       setState(() {
-         _totalAmount = int.parse(item.price);
-       });
+        setState(() {
+          _totalAmount = int.parse(item.price);
+        });
+      }
     });
   }
 

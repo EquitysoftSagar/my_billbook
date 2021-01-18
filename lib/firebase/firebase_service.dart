@@ -236,6 +236,34 @@ class FirebaseService {
       return false;
     }
   }
+  static Future<bool> editBillsName(String id ,String name)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(id).update({
+            Field.name : name
+          });
+      toastSuccess('Update successfully');
+      return true;
+    }catch (e){
+      toastError('Error when updating bills name');
+      print('Catch on update bills name ==>$e');
+      return false;
+    }
+  }
+
+  static Future<bool> updateInvoiceNumberBills(String id ,String prefix,String next)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(id).update({
+        Field.settingPrefix : prefix,
+        Field.settingNext : next
+      });
+      toastSuccess('Update successfully');
+      return true;
+    }catch (e){
+      toastError('Error when updating invoice number');
+      print('Catch on update bills invoice number ==>$e');
+      return false;
+    }
+  }
 
   static Future<bool> deleteBills(String id)async{
     try{
@@ -264,6 +292,17 @@ class FirebaseService {
     }catch (e){
       toastError('Error when adding document');
       print('Catch on adding document==>$e');
+      return false;
+    }
+  }
+  static Future<bool> editDocuments(String billId ,String docId,Documents documents)async{
+    try{
+      await _firebaseFirestore.collection(Collection.bills).doc(billId).collection(Collection.documents).doc(docId).update(documents.toJson());
+      toastSuccess('Update successfully');
+      return true;
+    }catch (e){
+      toastError('Error when updating document');
+      print('Catch on update document ==>$e');
       return false;
     }
   }

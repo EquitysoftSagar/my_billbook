@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Item {
+  String id;
   String name;
   String price;
   String description;
@@ -10,16 +11,18 @@ class Item {
   int status;
 
   Item(
-      {this.name,
+      { this.name,
+        this.id,
         this.price,
         this.description,
         this.userId,
-      this.updatedAt,
-      this.createdAt,
+        this.updatedAt,
+        this.createdAt,
         this.status
       });
 
   Item.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     price = json['price'];
     description = json['description'];
@@ -31,6 +34,7 @@ class Item {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['price'] = this.price;
     data['description'] = this.description;

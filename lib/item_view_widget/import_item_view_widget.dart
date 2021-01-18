@@ -8,8 +8,9 @@ class ImportItemViewWidget extends StatelessWidget {
   final Customer customer;
   final Item item;
   final Function onImport;
+  final String id;
 
-  const ImportItemViewWidget({Key key,this.isCustomer,this.customer,this.item,this.onImport}) : super(key: key);
+  const ImportItemViewWidget({Key key,this.isCustomer,this.customer,this.item,this.onImport,this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ImportItemViewWidget extends StatelessWidget {
       subtitle:Text(isCustomer ? customer.email : item.price,style: TextStyle(color: MyColors.text,fontSize: 12,),),
       trailing: RaisedButton(
         onPressed: (){
-          onImport(item,customer);
+          onImport(item,customer,id);
         },
         child: Text('IMPORT',style: TextStyle(color: Colors.white,fontSize: 14,)),
       ),

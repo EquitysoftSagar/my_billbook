@@ -138,10 +138,7 @@ class EditDocumentDialog extends StatelessWidget {
   }
   void updateBills(BuildContext context)async{
     showProgress(context);
-    var b = Bills();
-    b.name = _controller.text;
-    b.userId = firebaseUser.uid;
-    var _result = await FirebaseService.editBills(id,b);
+    var _result = await FirebaseService.editBillsName(id,_controller.text);
     if(_result){
       Navigator.pop(context);
       Navigator.pop(context);

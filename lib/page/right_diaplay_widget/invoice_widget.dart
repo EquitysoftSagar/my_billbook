@@ -10,24 +10,31 @@ import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/search_text_field.dart';
 import 'package:provider/provider.dart';
 
-class InvoiceWidget extends StatelessWidget {
+class InvoiceWidget extends StatefulWidget {
 
   final Bills bills;
   final String id;
-  final _searchController = TextEditingController();
 
   InvoiceWidget({Key key, this.bills,this.id}) : super(key: key);
 
   @override
+  _InvoiceWidgetState createState() => _InvoiceWidgetState();
+}
+
+class _InvoiceWidgetState extends State<InvoiceWidget> {
+  final _searchController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    final _provider = Provider.of<HomePageProvider>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          final _provider = Provider.of<HomePageProvider>(context,listen: false);
           _provider.isInvoiceWidget = true;
           _provider.rideSideWidget = AddInvoiceWidget(
-            id: id,
-            bills: bills,
+            billId: widget.id,
+            bills: widget.bills,
+            forEdit: false,
           );
         },
         child: Icon(Icons.add),
@@ -41,7 +48,7 @@ class InvoiceWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  bills.name,
+                  widget.bills.name,
                   style: TextStyle(
                       color: MyColors.invoiceTxt,
                       fontWeight: FontWeight.w700,
@@ -132,7 +139,7 @@ class InvoiceWidget extends StatelessWidget {
                       height: 1,
                     ),
                     StreamBuilder(
-                      stream: FirebaseService.getDocuments(id),
+                      stream: FirebaseService.getDocuments(widget.id),
                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return Center(
@@ -152,6 +159,8 @@ class InvoiceWidget extends StatelessWidget {
                                 itemBuilder: (BuildContext context, int index) {
                                   return InvoiceListItemViewWidget(
                                     index: index,
+                                    id: snapshot.data.docs[index].id,
+                                    onItemTap: onListTap,
                                     documents:Documents.fromJson( snapshot.data.docs[index].data())
                                   );
                                 },
@@ -166,6 +175,20 @@ class InvoiceWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void onListTap(String id,Documents d){
+
+    final _provider = Provider.of<HomePageProvider>(context,listen: false);
+
+    _provider.isInvoiceWidget = true;
+    _provider.rideSideWidget = AddInvoiceWidget(
+      billId: widget.id,
+      bills: widget.bills,
+      docId: id,
+      forEdit: true,
+      documents: d,
     );
   }
 }

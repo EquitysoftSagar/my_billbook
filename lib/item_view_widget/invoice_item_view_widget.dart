@@ -49,7 +49,7 @@ class InvoiceItemViewWidget extends StatelessWidget {
                         fontSize: 14.0)),
               ),
               Expanded(
-                child: Text(Constants.indianCurrencySymbol + (item.discount.isEmpty ? '0' : item.discount),
+                child: Text(Constants.indianCurrencySymbol + (item.discount),
                     textAlign: TextAlign.right,
                     style: TextStyle(
                         color: MyColors.invoiceTxt,

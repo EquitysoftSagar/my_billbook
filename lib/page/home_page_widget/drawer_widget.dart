@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/add_document_dialog.dart';
 import 'package:my_billbook/list_widget/document_name_list_widget.dart';
 import 'package:my_billbook/page/drawer_widgets/drawer_items_widget.dart';
+import 'package:my_billbook/page/right_diaplay_widget/setting_widget.dart';
+import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:provider/provider.dart';
 
 class DrawerWidget extends StatelessWidget {
   @override
@@ -12,7 +15,7 @@ class DrawerWidget extends StatelessWidget {
       child: Container(
         color: MyColors.drawer,
         width: 200,
-        child: ListView(
+        child: Column(
           children: [
             ListTile(
               contentPadding: EdgeInsets.only(left: 15, right: 10),
@@ -35,7 +38,15 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),  //document
             DocumentNameListWidget(),
-            DrawerItemsWidget()
+            DrawerItemsWidget(),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(icon: Icon(Icons.message), onPressed: (){onMessageTap(context);},color: MyColors.invoiceTxt,),
+                IconButton(icon: Icon(Icons.settings), onPressed: (){onSettingTap(context);},color: MyColors.invoiceTxt,),
+              ],
+            )
           ],
         ),
       ),
@@ -46,5 +57,12 @@ class DrawerWidget extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AddDocumentDialog());
+  }
+
+  void onMessageTap(BuildContext context) {
+  }
+
+  void onSettingTap(BuildContext context) {
+    Provider.of<HomePageProvider>(context,listen: false).rideSideWidget = SettingWidget();
   }
 }

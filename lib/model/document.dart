@@ -23,6 +23,8 @@ class Documents {
   int status;
   String documentStatus;
   String recurring;
+  String customerId;
+  List<String> itemId;
   Timestamp createdAt;
   Timestamp updatedAt;
 
@@ -45,6 +47,8 @@ class Documents {
         this.createdAt,
         this.updatedAt,
         this.documentStatus,
+        this.customerId,
+        this.itemId,
         this.photo});
 
   Documents.fromJson(Map<String, dynamic> json) {
@@ -60,6 +64,7 @@ class Documents {
     documentStatus = json['document_status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    customerId = json['customer_id'];
     taxDiscountShipping = json['tax_discount_shipping'] != null
         ? new TaxDiscountShipping.fromJson(json['tax_discount_shipping'])
         : null;
@@ -70,6 +75,12 @@ class Documents {
       item = [];
       json['item'].forEach((v) {
         item.add(new InvoiceItemModel.fromJson(v));
+      });
+    }
+    if (json['item_id'] != null) {
+      itemId = [];
+      json['item_id'].forEach((v) {
+        itemId.add(v);
       });
     }
     mySignature = json['my_signature'];
@@ -103,8 +114,12 @@ class Documents {
     if (this.customer != null) {
       data['customer'] = this.customer.toJson();
     }
+    data['customer_id'] = this.customerId;
     if (this.item != null) {
       data['item'] = this.item.map((v) => v.toJson()).toList();
+    }
+    if (this.itemId != null) {
+      data['item_id'] = this.itemId.map((v) => v).toList();
     }
     data['my_signature'] = this.mySignature;
     data['client_signature'] = this.clientSignature;

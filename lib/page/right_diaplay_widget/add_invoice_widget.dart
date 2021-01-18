@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_billbook/dialog/customer_dialog.dart';
 import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/dialog/add_tax_discount_dialog.dart';
 import 'package:my_billbook/dialog/alert_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/item_view_widget/invoice_item_view_widget.dart';
 import 'package:my_billbook/model/bills.dart';
+import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
+import 'package:my_billbook/model/photo.dart';
 import 'package:my_billbook/model/tax_discount_shipping.dart';
 import 'package:my_billbook/page/add_invoce_widget/invoice_customer_view_widget.dart';
 import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
@@ -23,10 +24,14 @@ import 'package:provider/provider.dart';
 
 class AddInvoiceWidget extends StatefulWidget {
 
-  final String id;
+  final String billId;
+  final String docId;
   final Bills bills;
+  final bool forEdit;
+  final Documents documents;
 
-  AddInvoiceWidget({Key key, this.id, this.bills}) : super(key: key);
+
+  AddInvoiceWidget({Key key, this.billId, this.bills, this.forEdit, this.documents,this.docId}) : super(key: key);
 
   @override
   _AddInvoiceWidgetState createState() => _AddInvoiceWidgetState();
@@ -42,18 +47,41 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   final _dueOnDateController = TextEditingController();
 
   final _noteController = TextEditingController();
-  HomePageProvider _provider;
+
   final _formKey = GlobalKey<FormState>();
+
+  Customer _customer;
+  List<InvoiceItemModel> _invoiceItem = [];
+  List<Photo> _photoList = [];
+  bool _removeDueDate = false;
+  bool _mySignature = false;
+  bool _clientSignature = false;
+  String _recurring = 'None';
 
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 8)));
+    if(widget.forEdit){
+      var d = widget.documents;
+      _invoiceController.text = d.invoice;
+      _poController.text = d.po;
+      _dateController.text = DateFormat('dd-MM-yyyy').format(d.date.toDate());
+      _dueOnDateController.text = d.dueDate != null ? DateFormat('dd-MM-yyyy').format(d.dueDate.toDate()) : DateFormat('dd-MM-yyyy').format(d.date.toDate().add(Duration(days: 6)));
+      _removeDueDate = d.dueDate == null ? true : false;
+      _noteController.text = d.note;
+      _customer = d.customer;
+      _invoiceItem = d.item;
+      _mySignature = d.mySignature;
+      _clientSignature = d.clientSignature;
+      _recurring = d.recurring;
+    }else{
+      _dateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 6)));
+    }
   }
+
   @override
   Widget build(BuildContext context) {
-    _provider = Provider.of<HomePageProvider>(context);
     return Scaffold(
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -68,9 +96,9 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                           context: context,
                           builder: (context) =>
                               MyAlertDialog(
-                                title:
-                                'Are you sure you want to leave without saving?',
-                                onYesTap: onAlertYesTap
+                                  title:
+                                  'Are you sure you want to leave without saving?',
+                                  onYesTap: onAlertYesTap
                               ));
                     },
                     child: Text(
@@ -91,7 +119,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                   Spacer(),
                   RaisedButton(
                     onPressed: () {
-                      onSaveTap();
+                      onSaveTap(context);
                     },
                     child: Text(
                       'Save',
@@ -121,8 +149,8 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                         child: Row(
                           children: [
                             Expanded(
-                              flex: 3,
-                              child: InvoiceCustomerViewWidget()
+                                flex: 3,
+                                child: InvoiceCustomerViewWidget(customer: _customer,onSetCustomer:onSetCustomer,)
                             ),
                             SizedBox(
                               width: 30,
@@ -159,20 +187,20 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                   InvoiceTextField(
                                     labelText: 'Date',
                                     controller: _dateController,
-                                    onSuffixTap: () async {
-                                      onDateTap();
+                                    onSuffixTap: () {
+                                      onDateTap(context);
                                     },
                                   ),
                                   SizedBox(
                                     height: 25,
                                   ),
                                   Visibility(
-                                    visible: !_provider.removeDueDate,
+                                    visible: !_removeDueDate,
                                     child: InvoiceTextField(
                                       labelText: 'Due on',
                                       controller: _dueOnDateController,
-                                      onSuffixTap: () async {
-                                       onDueDateTap();
+                                      onSuffixTap: () {
+                                        onDueDateTap(context);
                                       },
                                     ),
                                   ),
@@ -182,9 +210,11 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                   SizedBox(
                                     width: 200,
                                     child: SwitchListTile(
-                                      value: _provider.removeDueDate,
+                                      value: _removeDueDate,
                                       onChanged: (value) {
-                                        _provider.removeDueDate = value;
+                                        setState(() {
+                                          _removeDueDate = value;
+                                        });
                                       },
                                       title: Text('Remove due date'),
                                       contentPadding: EdgeInsets.zero,),
@@ -210,9 +240,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                       height: 10,
                     ),
                     RaisedButton(
-                      onPressed: () {
-                        onAddItemTap(context);
-                      },
+                      onPressed:onAddItemTap,
                       child: Text(
                         '+ Add Item',
                         style: TextStyle(color: Colors.white),
@@ -246,7 +274,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        onTaxAndDiscountTap();
+                                        onTaxAndDiscountTap(context);
                                       },
                                       child: Row(
                                         children: [
@@ -274,9 +302,11 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                         child: SwitchListTile(
                                           contentPadding: EdgeInsets
                                               .zero,
-                                          value: _provider.signature,
+                                          value: _mySignature,
                                           onChanged: (value) {
-                                            _provider.signature = value;
+                                            setState(() {
+                                              _mySignature = value;
+                                            });
                                           },
                                           title: Text(
                                             'My Signature',
@@ -292,11 +322,11 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                         child: SwitchListTile(
                                           contentPadding: EdgeInsets
                                               .zero,
-                                          value: _provider
-                                              .clientSignature,
+                                          value: _clientSignature,
                                           onChanged: (value) {
-                                            _provider.clientSignature =
-                                                value;
+                                            setState(() {
+                                              _clientSignature = value;
+                                            });
                                           },
                                           title: Text(
                                             'Client\'s Signature',
@@ -313,7 +343,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                     SizedBox(
                                       width: 150,
                                       child: DropdownButtonFormField(
-                                          value: 'None',
+                                          value: _recurring,
                                           onChanged: onRecurringChange,
                                           decoration: InputDecoration(
                                               contentPadding:
@@ -613,84 +643,63 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       itemBuilder: (BuildContext context, int index) {
         return InvoiceItemViewWidget(
           index: index,
-          item: _provider.invoiceItem[index],
-          removeFunction: (InvoiceItemModel item){
-            _provider.removeInvoiceItem = item;
-          },
-          updateFunction: (InvoiceItemModel item,int index){
-            showDialog(
-                context: context,
-                builder: (context) =>
-                    ItemDialog(
-                      forEdit: true,
-                      fromInvoice: true,
-                      provider: _provider,
-                      invoiceItemModel: item,
-                      index: index,
-                    ));
-          },
+          item: _invoiceItem[index],
+          removeFunction: _removeItem,
+          updateFunction:_updateItem,
         );
       },
       shrinkWrap: true,
-      itemCount: _provider.invoiceItem.length,
+      itemCount: _invoiceItem.length,
       physics: NeverScrollableScrollPhysics(),);
   }
 
-  void onTaxAndDiscountTap() {
+  void onTaxAndDiscountTap(BuildContext context) {
     showDialog(
         context: context,
         builder: (context) => AddTaxDiscountDialog());
   }
-
-  void onAddCustomerTap(BuildContext context) {
-    final _provider = Provider.of<HomePageProvider>(context,listen: false);
-    showDialog(
-        context: context,
-        builder: (context) =>
-            CustomerDialog(
-              fromInvoice: true,
-              forEdit: false,
-              provider: _provider,
-            ));
-  }
-
-  void onAddItemTap(BuildContext context) {
+  void onAddItemTap() {
     showDialog(
         context: context,
         builder: (context) =>
             ItemDialog(
               forEdit: false,
               fromInvoice: true,
-              provider: _provider,
-            ));
+            )).then((value){
+              if(value != null){
+                InvoiceItemModel itemModel = value;
+
+               setState(() {
+                 _invoiceItem.add(itemModel);
+               });
+              }
+    });
   }
 
   int _getSubTotal(){
     int _total = 0;
-    for(InvoiceItemModel i in _provider.invoiceItem){
+    for(InvoiceItemModel i in _invoiceItem){
       _total = _total + int.parse(i.amount);
     }
     return _total;
   }
 
   void onAlertYesTap() {
-    _provider.invoiceItem = [];
-    _provider.invoiceCustomer = null;
-    _provider.signature = false;
-    _provider.clientSignature = false;
-    _provider.isInvoiceWidget = false;
-
-    _provider.rideSideWidget = InvoiceWidget(
-      id: widget.id,
+    final _homeProvider = Provider.of<HomePageProvider>(context,listen: false);
+    _homeProvider.isInvoiceWidget = false;
+    _homeProvider.rideSideWidget = InvoiceWidget(
+      id: widget.billId,
       bills: widget.bills,
     );
   }
 
   void onRecurringChange(String value) {
-    _provider.recurring = value;
+    setState(() {
+      _recurring = value;
+    });
   }
 
-  void onDateTap()async{
+  void onDateTap(BuildContext context)async{
     DateTime _initialDate = DateFormat('dd-MM-yyyy').parse(_dateController.text);
     _dateController.text = await getDateFromDatePicker(context,_initialDate);
     _initialDate = DateFormat('dd-MM-yyyy').parse(_dateController.text);
@@ -698,55 +707,94 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(_dueDate);
   }
 
-  void onDueDateTap()async {
+  void onDueDateTap(BuildContext context)async {
     DateTime _initialDate = DateFormat('dd-MM-yyyy').parse(_dueOnDateController.text);
     _dueOnDateController.text = await getDateFromDatePicker(context,_initialDate);
   }
 
-  void onSaveTap() {
-    if(_provider.invoiceCustomer == null){
+  void onSaveTap(BuildContext context) {
+    if(_customer == null){
       toastError('Please add customer');
+    }else if(_invoiceItem.length == 0){
+      toastError('Please add at least one item');
     }else if(_formKey.currentState.validate()){
-      addDocument();
+      addEditDocument(context);
     }
   }
-  void addDocument()async{
+
+  void addEditDocument(BuildContext context,)async{
+
     showProgress(context);
 
     var d = Documents();
     d.invoice = _invoiceController.text;
     d.po = _poController.text;
     d.date = Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dateController.text));
-    d.dueDate = _provider.removeDueDate ? '' : Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dueOnDateController.text));
-    d.customer = _provider.invoiceCustomer;
-    d.item = _provider.invoiceItem;
+    d.dueDate = _removeDueDate ? null : Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dueOnDateController.text));
+    d.customer = _customer;
+    d.item = _invoiceItem;
     d.subTotal = _getSubTotal().toString();
     d.total = d.subTotal;
     d.amountDue = d.total;
-    d.mySignature = _provider.signature;
-    d.clientSignature = _provider.clientSignature;
-    d.recurring = _provider.recurring;
+    d.mySignature = _mySignature;
+    d.clientSignature = _clientSignature;
+    d.recurring = _recurring;
     d.note = _noteController.text;
-    d.photo = [];
+    d.photo = _photoList;
     d.taxDiscountShipping = TaxDiscountShipping();
-    d.createdAt = Timestamp.fromDate(DateTime.now());
+    d.createdAt = widget.forEdit ? widget.documents.updatedAt : Timestamp.fromDate(DateTime.now());
     d.updatedAt = Timestamp.fromDate(DateTime.now());
     d.status = 1;
     d.documentStatus = 'Pending';
+    d.customerId = _customer.id;
+    d.itemId = await getItemsId();
 
-    var _result = await FirebaseService.addDocument(widget.id, d);
+    var _result = widget.forEdit ? await FirebaseService.editDocuments(widget.billId, widget.docId, d) : await FirebaseService.addDocument(widget.billId, d);
     Navigator.pop(context);
 
     if(_result){
-      _provider.invoiceItem = [];
-      _provider.invoiceCustomer = null;
-      _provider.signature = false;
-      _provider.clientSignature = false;
-
-      _provider.rideSideWidget = InvoiceWidget(
-        id: widget.id,
+      final _homeProvider = Provider.of<HomePageProvider>(context,listen: false);
+      _homeProvider.isInvoiceWidget = false;
+      _homeProvider.rideSideWidget = InvoiceWidget(
+        id: widget.billId,
         bills: widget.bills,
       );
     }
+  }
+
+  void onSetCustomer(Customer value) {
+    setState(() {
+      _customer = value;
+    });
+  }
+
+  void _removeItem(InvoiceItemModel item) {
+    setState(() {
+      _invoiceItem.remove(item);
+    });
+  }
+  void _updateItem(InvoiceItemModel item,int index) {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            ItemDialog(
+              forEdit: true,
+              fromInvoice: true,
+              invoiceItemModel: item,
+            )).then((value){
+      if(value != null){
+        InvoiceItemModel _item = value;
+        setState(() {
+          _invoiceItem[index] = _item;
+        });
+      }
+    });
+  }
+  Future<List<String>> getItemsId()async{
+    List<String> _list = [];
+    for(InvoiceItemModel i in _invoiceItem){
+      _list.add(i.id);
+    }
+    return _list;
   }
 }

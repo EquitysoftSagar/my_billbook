@@ -113,13 +113,9 @@ class DrawerItemsWidget extends StatelessWidget {
         builder: (context) => MyAlertDialog(
           title: 'Are you sure you want to leave without saving?',
           onYesTap: () {
-            final _provider = Provider.of<HomePageProvider>(_context,listen:false);
-            _provider.invoiceItem = [];
-            _provider.invoiceCustomer = null;
-            _provider.isInvoiceWidget = false;
-            _provider.signature = false;
-            _provider.clientSignature = false;
-            _provider.rideSideWidget = widget;
+            final _homeProvider = Provider.of<HomePageProvider>(_context,listen:false);
+            _homeProvider.isInvoiceWidget = false;
+            _homeProvider.rideSideWidget = widget;
           },
         ));
   }
