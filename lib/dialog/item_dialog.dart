@@ -65,8 +65,6 @@ class _ItemDialogState extends State<ItemDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        insetAnimationDuration: Duration(seconds: 8),
-        insetAnimationCurve: Curves.bounceInOut,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

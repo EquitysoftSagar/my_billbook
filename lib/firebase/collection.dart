@@ -5,4 +5,5 @@ class Collection{
   static String user  = 'user';
   static String bills  = 'bills';
   static String documents  = 'documents';
+  static String userSettings  = 'user_settings';
 }

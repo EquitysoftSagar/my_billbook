@@ -13,15 +13,15 @@ class TaxDiscountShipping {
   SecondTax secondTax;
 
   TaxDiscountShipping(
-      {this.discount,
-        this.discountType,
-        this.tax,
-        this.taxType,
-        this.taxLabel,
-        this.shipping,
-        this.inclusive,
-        this.deductible,
-        this.nonTaxable,
+      {this.discount = '',
+        this.discountType = '',
+        this.tax = '',
+        this.taxType = '',
+        this.taxLabel = '',
+        this.shipping = '',
+        this.inclusive = false,
+        this.deductible = false,
+        this.nonTaxable = false,
         this.secondTax});
 
   TaxDiscountShipping.fromJson(Map<String, dynamic> json) {

@@ -1,3 +1,5 @@
+import 'package:my_billbook/model/user.dart';
+
 class Constants{
 
   //reg exp
@@ -6,6 +8,7 @@ class Constants{
   //Collection
 
 //token
-static String userId = '';
+static String userDocId = '';
+static UserModel userModel;
 static String indianCurrencySymbol = '₹';
 }

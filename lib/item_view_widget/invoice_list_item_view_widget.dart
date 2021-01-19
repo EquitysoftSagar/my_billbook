@@ -47,7 +47,7 @@ class InvoiceListItemViewWidget extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text( // No.
-                '${index + 1 }',
+                documents.invoice,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: MyColors.invoiceTxt,

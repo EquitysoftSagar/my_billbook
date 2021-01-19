@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:my_billbook/model/user.dart';
+import 'package:my_billbook/util/constants.dart';
+
+import 'my_shared_preference.dart';
 
 void navigateTo<T>(BuildContext context, Widget widget,
     {ValueChanged<T> result}) {
@@ -61,4 +67,15 @@ Future<String> getDateFromDatePicker(BuildContext context,DateTime initialDate) 
       initialDate: initialDate,
       firstDate: DateTime(1999),
       lastDate: DateTime(2025)));
+}
+
+Future<void> saveUser(UserModel userObject) async {
+  final String str = jsonEncode(userObject.toJson());
+  print('user ===> $str');
+  await SaveValue.string(Keys.user, str);
+  Constants.userModel = userObject;
+}
+Future<void> getUser() async {
+  String str = await GetValue.string(Keys.user);
+  Constants.userModel = UserModel.fromJson(jsonDecode(str));
 }

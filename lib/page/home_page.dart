@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
-import 'package:my_billbook/provider/setting_provider.dart';
+import 'package:my_billbook/util/constants.dart';
+import 'package:my_billbook/util/my_shared_preference.dart';
 import 'package:provider/provider.dart';
-
 import 'home_page_widget/drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,26 +39,20 @@ class _HomePageState extends State<HomePage> {
           SizedBox(width: 20,)
         ],
       ),
-      body: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (BuildContext context) => HomePageProvider(),),
-          ChangeNotifierProvider(create: (BuildContext context) => SettingProvider(),),
-        ],
-        child: Center(
-          child: Row(
-            children: [
-              SizedBox(
-                width: 200,
-                  child: DrawerWidget()),
-              Consumer<HomePageProvider>(
-                builder: (BuildContext context, provider, Widget child) {
-                  return Expanded(
-                      child: provider.rideSideWidget
-                  );
-                },
-              )
-            ],
-          ),
+      body: Center(
+        child: Row(
+          children: [
+            SizedBox(
+              width: 200,
+                child: DrawerWidget()),
+            Consumer<HomePageProvider>(
+              builder: (BuildContext context, provider, Widget child) {
+                return Expanded(
+                    child: provider.rideSideWidget
+                );
+              },
+            )
+          ],
         ),
       ),
     );

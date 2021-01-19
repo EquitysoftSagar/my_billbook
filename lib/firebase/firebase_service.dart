@@ -8,6 +8,7 @@ import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/model/user.dart';
+import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 
 User firebaseUser;
@@ -26,7 +27,7 @@ class FirebaseService {
     try{
       var _result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       firebaseUser = _result.user;
-      await getUser(firebaseUser.uid);
+      await getUser();
       toastSuccess('Login successfully');
       return true;
     }on FirebaseAuthException catch (error) {
@@ -54,7 +55,6 @@ class FirebaseService {
     try{
       var _result = await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: user.password);
       firebaseUser = _result.user;
-      user.id = firebaseUser.uid;
       await addUser(user);
       await addBills(Bills(name: 'Invoice',userId: firebaseUser.uid));
       toastSuccess('Sign up successfully');
@@ -81,26 +81,38 @@ class FirebaseService {
   }
 
   //User
-  static Future<bool> addUser(UserModel user)async{
+  static Future<void> addUser(UserModel user)async{
     try{
-      await _firebaseFirestore.collection(Collection.user).add(user.toJson());
+      await _firebaseFirestore.collection(Collection.user).doc(firebaseUser.uid).set(user.toJson());
       // toastSuccess('Login successfully');
-      return true;
     }catch (e){
       // toastError('Error when adding user');
       print('Catch on add user ==>$e');
-      return false;
     }
   }
 
-  static Future<bool> getUser(String id)async{
+  static Future<void> getUser()async{
     try{
-      await _firebaseFirestore.collection(Collection.user).where(Field.id).get();
-      // toastSuccess('Login successfully');
+      var _result = await _firebaseFirestore.collection(Collection.user).doc(firebaseUser.uid).get();
+      Constants.userModel = UserModel.fromJson(_result.data());
+    }catch (e){
+      print('Catch on get user ==>$e');
+    }
+  }
+  static Future<bool> updateUserNames(String firstName,String lastName)async{
+    try{
+      await _firebaseFirestore.collection(Collection.user).doc(Constants.userDocId).update({
+        Field.firstName:firstName,
+        Field.lastName:lastName,
+        Field.updatedAt:Timestamp.now().toDate()
+      });
+      Constants.userModel.firstName = firstName;
+      Constants.userModel.lastName = lastName;
+      toastSuccess('Update Successfully');
       return true;
     }catch (e){
-      // toastError('Error when get user');
-      print('Catch on get user ==>$e');
+      toastError('Error when update user');
+      print('Catch on update user ==>$e');
       return false;
     }
   }
@@ -250,17 +262,34 @@ class FirebaseService {
     }
   }
 
-  static Future<bool> updateInvoiceNumberBills(String id ,String prefix,String next)async{
+  static Future<bool> updateInvoiceNumberBillsSetting(List<Bills> bills)async{
     try{
-      await _firebaseFirestore.collection(Collection.bills).doc(id).update({
-        Field.settingPrefix : prefix,
-        Field.settingNext : next
-      });
+      for(Bills b in bills){
+        await _firebaseFirestore.collection(Collection.bills).doc(b.id).update({
+          Field.settingPrefix : b.settingPrefix,
+          Field.settingNext : b.settingNext
+        });
+      }
       toastSuccess('Update successfully');
       return true;
     }catch (e){
       toastError('Error when updating invoice number');
       print('Catch on update bills invoice number ==>$e');
+      return false;
+    }
+  }
+  static Future<bool> updateInvoiceDefaultNote(List<Bills> bills)async{
+    try{
+      for(Bills b in bills){
+        await _firebaseFirestore.collection(Collection.bills).doc(b.id).update({
+          Field.settingDefaultNote: b.settingDefaultNote
+        });
+      }
+      toastSuccess('Update successfully');
+      return true;
+    }catch (e){
+      toastError('Error when updating default note');
+      print('Catch on update bills default note ==>$e');
       return false;
     }
   }
@@ -284,9 +313,12 @@ class FirebaseService {
     }
     return null;
   }
-  static Future<bool> addDocument(String billId, Documents documents)async{
+  static Future<bool> addDocument(String billId, Documents documents,int next)async{
     try{
       await _firebaseFirestore.collection(Collection.bills).doc(billId).collection(Collection.documents).add(documents.toJson());
+      await _firebaseFirestore.collection(Collection.bills).doc(billId).update({
+        Field.settingNext : next
+      });
       toastSuccess('Document added successfully');
       return true;
     }catch (e){

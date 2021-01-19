@@ -117,7 +117,7 @@ class EditDocumentDialog extends StatelessWidget {
                   SizedBox(width: 10,),
                   RaisedButton(
                     onPressed: () {
-                      updateBills(context);
+                      onSaveTap(context);
                     },
                     child: Text('Save'),
                     color: MyColors.accent,
@@ -133,10 +133,10 @@ class EditDocumentDialog extends StatelessWidget {
 
   void onSaveTap(BuildContext context){
     if(_formKey.currentState.validate()){
-      updateBills(context);
+      updateBillsName(context);
     }
   }
-  void updateBills(BuildContext context)async{
+  void updateBillsName(BuildContext context)async{
     showProgress(context);
     var _result = await FirebaseService.editBillsName(id,_controller.text);
     if(_result){

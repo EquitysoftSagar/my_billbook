@@ -61,6 +61,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   @override
   void initState() {
     super.initState();
+    _invoiceController.text = widget.bills.settingPrefix + widget.bills.settingNext.toString();
     if(widget.forEdit){
       var d = widget.documents;
       _invoiceController.text = d.invoice;
@@ -110,7 +111,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                     ),
                   ),
                   Text(
-                    '> New',
+                    '> #${widget.documents.invoice}',
                     style: TextStyle(
                         color: MyColors.invoiceTxt,
                         fontWeight: FontWeight.w700,
@@ -749,7 +750,15 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     d.customerId = _customer.id;
     d.itemId = await getItemsId();
 
-    var _result = widget.forEdit ? await FirebaseService.editDocuments(widget.billId, widget.docId, d) : await FirebaseService.addDocument(widget.billId, d);
+    bool _result;
+
+    if(widget.forEdit){
+       _result = await FirebaseService.editDocuments(widget.billId, widget.docId, d);
+    }else{
+      widget.bills.settingNext = widget.bills.settingNext + 1;
+       _result = await FirebaseService.addDocument(widget.billId, d,widget.bills.settingNext);
+    }
+
     Navigator.pop(context);
 
     if(_result){

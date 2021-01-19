@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_billbook/style/colors.dart';
 
-class SettingsBillsTextField extends StatelessWidget {
+class UserAccountTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final _borderRadius = 5.0;
   final _borderWidth = 1.5;
 
-  const SettingsBillsTextField({Key key, this.labelText, this.controller,this.onChanged}) : super(key: key);
+  const UserAccountTextField({Key key, this.labelText, this.controller, this.onChanged}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
       onChanged: onChanged,
-      inputFormatters: labelText == 'Next #' ? <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
-      ]:[],
+      validator: (value){
+        switch(labelText){
+          case 'First Name':
+            if(value.isEmpty){
+              return 'First Name will be required';
+            }
+            return null;
+
+          default:
+            return null;
+        }
+      },
       decoration: InputDecoration(
           isDense: true,
-          counterText: '',
           labelText: labelText,
           errorStyle: TextStyle(color: Colors.red,fontWeight: FontWeight.w500),
           labelStyle: TextStyle(color: MyColors.labelText,fontWeight: FontWeight.w500),
