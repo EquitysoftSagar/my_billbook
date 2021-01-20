@@ -127,24 +127,13 @@ class InvoiceSettingDialog extends StatelessWidget {
 
   void onSaveTap(BuildContext context) async {
     bool _result;
-    if(dialogType == DialogType.invoiceNumber){
-      showProgress(context);
-      _result = await FirebaseService.updateInvoiceNumberBillsSetting(bills);
-      if (_result) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      } else {
-        Navigator.pop(context);
-      }
-    }else if(dialogType == DialogType.note){
-      showProgress(context);
-      _result = await FirebaseService.updateInvoiceDefaultNote(bills);
-      if (_result) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      } else {
-        Navigator.pop(context);
-      }
+    showProgress(context);
+    _result = await FirebaseService.updateBillsSetting(bills);
+    if (_result) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } else {
+      Navigator.pop(context);
     }
   }
 }

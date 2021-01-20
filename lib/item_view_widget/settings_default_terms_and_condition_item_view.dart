@@ -62,5 +62,6 @@ class SettingDefaultTermsAndConditionsItemView extends StatelessWidget {
   }
 
   void onChanged(String value) {
+    bills.settingDefaultTermsAndCondition = value;
   }
 }

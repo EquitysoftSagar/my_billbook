@@ -76,6 +76,7 @@ class FirebaseService {
   static void getCurrentUser(){
     firebaseUser = _firebaseAuth.currentUser;
   }
+
   static bool isLogin(){
     return _firebaseAuth.currentUser != null ? true : false;
   }
@@ -84,9 +85,7 @@ class FirebaseService {
   static Future<void> addUser(UserModel user)async{
     try{
       await _firebaseFirestore.collection(Collection.user).doc(firebaseUser.uid).set(user.toJson());
-      // toastSuccess('Login successfully');
     }catch (e){
-      // toastError('Error when adding user');
       print('Catch on add user ==>$e');
     }
   }
@@ -101,7 +100,7 @@ class FirebaseService {
   }
   static Future<bool> updateUserNames(String firstName,String lastName)async{
     try{
-      await _firebaseFirestore.collection(Collection.user).doc(Constants.userDocId).update({
+      await _firebaseFirestore.collection(Collection.user).doc(firebaseUser.uid).update({
         Field.firstName:firstName,
         Field.lastName:lastName,
         Field.updatedAt:Timestamp.now().toDate()
@@ -262,34 +261,16 @@ class FirebaseService {
     }
   }
 
-  static Future<bool> updateInvoiceNumberBillsSetting(List<Bills> bills)async{
+  static Future<bool> updateBillsSetting(List<Bills> bills)async{
     try{
       for(Bills b in bills){
-        await _firebaseFirestore.collection(Collection.bills).doc(b.id).update({
-          Field.settingPrefix : b.settingPrefix,
-          Field.settingNext : b.settingNext
-        });
+        await _firebaseFirestore.collection(Collection.bills).doc(b.id).update(b.toJson());
       }
       toastSuccess('Update successfully');
       return true;
     }catch (e){
-      toastError('Error when updating invoice number');
-      print('Catch on update bills invoice number ==>$e');
-      return false;
-    }
-  }
-  static Future<bool> updateInvoiceDefaultNote(List<Bills> bills)async{
-    try{
-      for(Bills b in bills){
-        await _firebaseFirestore.collection(Collection.bills).doc(b.id).update({
-          Field.settingDefaultNote: b.settingDefaultNote
-        });
-      }
-      toastSuccess('Update successfully');
-      return true;
-    }catch (e){
-      toastError('Error when updating default note');
-      print('Catch on update bills default note ==>$e');
+      toastError('Error when updating setting');
+      print('Catch on update setting ==>$e');
       return false;
     }
   }

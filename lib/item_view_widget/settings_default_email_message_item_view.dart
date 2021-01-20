@@ -62,5 +62,6 @@ class SettingDefaultEmailMessageItemView extends StatelessWidget {
   }
 
   void onChanged(String value) {
+    bills.settingDefaultEmailMessage = value;
   }
 }

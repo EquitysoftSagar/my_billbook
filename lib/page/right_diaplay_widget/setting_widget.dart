@@ -233,7 +233,6 @@ class SettingWidget extends StatelessWidget {
                               valueListenable: _dueInDays,
                                 builder: (BuildContext context, value,
                                     Widget child) {
-                                print('due in date call');
                                   return DropdownButtonFormField(
                                       value: value,
                                       isDense: true,

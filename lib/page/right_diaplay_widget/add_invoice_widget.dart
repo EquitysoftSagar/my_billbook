@@ -111,7 +111,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                     ),
                   ),
                   Text(
-                    '> #${widget.documents.invoice}',
+                    !widget.forEdit ? '> New' : '> #${widget.documents.invoice}',
                     style: TextStyle(
                         color: MyColors.invoiceTxt,
                         fontWeight: FontWeight.w700,

@@ -5,6 +5,7 @@ import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/style/images.dart';
 import 'package:my_billbook/ui/login_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
+import 'package:my_billbook/util/routes.dart';
 
 import 'home_page.dart';
 
@@ -15,7 +16,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text = 'smeetpanchal857@gmail.com';
+    _emailController.text = 'Gabbar857@gmail.com';
     _passwordController.text = '123456';
     return Scaffold(
       body: Center(
@@ -102,7 +103,7 @@ class LoginPage extends StatelessWidget {
       var _result = await FirebaseService.signIn(_emailController.text,_passwordController.text);
       Navigator.pop(context);
       if (_result) {
-        navigateTo(context, HomePage());
+        Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
       }
     }
   }
