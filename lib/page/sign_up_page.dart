@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/user.dart';
+import 'package:my_billbook/model/user_settings.dart';
 import 'package:my_billbook/page/home_page.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/sign_up_text_field.dart';
@@ -92,8 +93,10 @@ class SignUpPage extends StatelessWidget {
       u.displayEmail = _displayEmailController.text;
       u.password = _passwordController.text;
       u.status = 1;
+      u.userSettings = UserSettings();
       u.createdAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
       u.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+
      var _result =  await FirebaseService.signUp(u);
       Navigator.pop(context);
       if(_result){

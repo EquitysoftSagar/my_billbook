@@ -7,8 +7,6 @@ import 'package:my_billbook/ui/login_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 import 'package:my_billbook/util/routes.dart';
 
-import 'home_page.dart';
-
 class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -16,7 +14,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text = 'Gabbar857@gmail.com';
+    _emailController.text = 'smeetpanchal857@gmail.com';
     _passwordController.text = '123456';
     return Scaffold(
       body: Center(

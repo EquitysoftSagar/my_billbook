@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_billbook/model/user_settings.dart';
 
 class UserModel{
+  String id;
   String companyName;
   String firstName;
   String lastName;
@@ -10,18 +12,20 @@ class UserModel{
   Timestamp createdAt;
   Timestamp updatedAt;
   int status;
+  UserSettings userSettings;
 
   UserModel(
       {
-        this.companyName,
-        this.firstName,
-        this.lastName,
-        this.password,
-        this.email,
-        this.displayEmail,
+        this.companyName = '',
+        this.firstName = '',
+        this.lastName = '',
+        this.password = '',
+        this.email = '',
+        this.displayEmail = '',
         this.createdAt,
         this.updatedAt,
-        this.status});
+        this.userSettings,
+        this.status = 1});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     companyName = json['company_name'];
@@ -33,6 +37,9 @@ class UserModel{
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     status = json['status'];
+    userSettings = json['settings'] != null
+        ? new UserSettings.fromJson(json['settings'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +53,9 @@ class UserModel{
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['status'] = this.status;
+    if (this.userSettings != null) {
+      data['settings'] = this.userSettings.toJson();
+    }
     return data;
   }
 }

@@ -13,32 +13,30 @@ class CustomerListWidget extends StatelessWidget {
         stream: FirebaseService.getCustomer(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snap) {
           if (snap.hasData) {
-            return Expanded(
-                child: snap.data.docs.length == 0 ?
-                Center(
-                  child: Text(
-                    'No Customer',
-                    style: TextStyle(
-                        color: MyColors.invoiceTxt,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0),
-                  ),
-                ) :
-                ListView.builder(
-                  itemBuilder: (BuildContext context,
-                      int index) {
-                    return CustomerItemViewWidget(
-                      index: index,
-                      customer: Customer.fromJson(
-                          snap.data.docs[index].data()),
-                      id: snap.data.docs[index].id,
-                      deleteFunction: (String id){
-                        deleteCustomer(id, context);
-                      },
-                    );
-                  },
-                  itemCount: snap.data.docs.length,
-                ));
+            return snap.data.docs.length == 0 ?
+            Text(
+              'No Customer',
+              style: TextStyle(
+                  color: MyColors.invoiceTxt,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20.0),
+            ) : Flexible(
+              child: ListView.builder(
+                itemBuilder: (BuildContext context,
+                    int index) {
+                  return CustomerItemViewWidget(
+                    index: index,
+                    customer: Customer.fromJson(
+                        snap.data.docs[index].data()),
+                    id: snap.data.docs[index].id,
+                    deleteFunction: (String id){
+                      deleteCustomer(id, context);
+                    },
+                  );
+                },
+                itemCount: snap.data.docs.length,
+              ),
+            );
           } else {
             return Center(
               child: CircularProgressIndicator(),

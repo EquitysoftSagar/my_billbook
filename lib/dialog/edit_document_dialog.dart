@@ -13,8 +13,9 @@ class EditDocumentDialog extends StatelessWidget {
   final Bills bills;
   final String id;
   final int index;
+  final int length;
 
-   EditDocumentDialog({Key key, this.bills,this.id,this.index}) : super(key: key);
+   EditDocumentDialog({Key key, this.bills,this.id,this.index,this.length}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +98,7 @@ class EditDocumentDialog extends StatelessWidget {
                 children: [
                   SizedBox(width: 20,),
                   Visibility(
-                    visible: index == 0 ? false : true,
+                    visible: length == 1 ? false : true,
                     child: RaisedButton(
                       onPressed: () {
                         removeBills(context);

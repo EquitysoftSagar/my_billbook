@@ -1,26 +1,35 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/dialog/invoice_setting_dialog.dart';
 import 'package:my_billbook/dialog/user_account_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
-import 'package:my_billbook/model/user.dart';
 import 'package:my_billbook/provider/invoice_number_provider.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/enum.dart';
+import 'package:my_billbook/util/methods.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class SettingWidget extends StatelessWidget {
 
   final _borderRadius = 5.0;
   final _borderWidth = 1.5;
   final _scrollController = ScrollController();
-  final ValueNotifier<String> _dueInDays = ValueNotifier<String>('7');
-  final ValueNotifier<String> _dateFormat = ValueNotifier<String>('05 Apr 2014');
-  final ValueNotifier<String> _language = ValueNotifier<String>('English');
-  final ValueNotifier<bool> _sendMeCopy = ValueNotifier<bool>(false);
+  ValueNotifier<String> _dueInDays;
+  ValueNotifier<String> _dateFormat;
+  ValueNotifier<String> _language;
+  ValueNotifier<bool> _sendMeCopy;
 
   @override
   Widget build(BuildContext context) {
+
+    _dueInDays = ValueNotifier<String>(userModel.userSettings.dueInDays);
+    _dateFormat = ValueNotifier<String>(userModel.userSettings.dateFormat);
+    _language = ValueNotifier<String>(userModel.userSettings.language);
+    _sendMeCopy = ValueNotifier<bool>(userModel.userSettings.sendMeCopy);
+
     return CupertinoScrollbar(
       thickness: 8.0,
       thicknessWhileDragging: 8.0,
@@ -61,7 +70,7 @@ class SettingWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 10,),
                       Text(
-                        firebaseUser.email,
+                        userModel.email,
                         style: TextStyle(
                             color: MyColors.invoiceTxt,
                             fontWeight: FontWeight.w600,
@@ -69,7 +78,9 @@ class SettingWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 10,),
                       FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            onLogoutTap(context);
+                          },
                           materialTapTargetSize: MaterialTapTargetSize
                               .shrinkWrap,
                           minWidth: 0,
@@ -236,7 +247,9 @@ class SettingWidget extends StatelessWidget {
                                   return DropdownButtonFormField(
                                       value: value,
                                       isDense: true,
-                                      onChanged: onDueInDaysChange,
+                                      onChanged: (value){
+                                        onDueInDaysChange(context,value);
+                                      },
                                       style: TextStyle(
                                           color: MyColors.invoiceTxt,
                                           fontWeight: FontWeight.w600,
@@ -426,7 +439,9 @@ class SettingWidget extends StatelessWidget {
                           return SwitchListTile(
                             value: value,
                             contentPadding: EdgeInsets.symmetric(vertical: 1),
-                            onChanged: onSendMeCopyChanged,
+                            onChanged: (value){
+                              onSendMeCopyChanged(context,value);
+                            },
                             title: Text(
                               'Send me a copy',
                               style: TextStyle(
@@ -469,7 +484,9 @@ class SettingWidget extends StatelessWidget {
                                child: DropdownButtonFormField(
                                    value: value,
                                    isDense: true,
-                                   onChanged: onDateFormatChanged,
+                                   onChanged: (value){
+                                     onDateFormatChanged(context,value);
+                                   },
                                    style: TextStyle(
                                        color: MyColors.invoiceTxt,
                                        fontWeight: FontWeight.w600,
@@ -548,7 +565,9 @@ class SettingWidget extends StatelessWidget {
                                 child: DropdownButtonFormField(
                                     value: value,
                                     isDense: true,
-                                    onChanged: onLanguageChanged,
+                                    onChanged: (value){
+                                      onLanguageChanged(context,value);
+                                    },
                                     style: TextStyle(
                                         color: MyColors.invoiceTxt,
                                         fontWeight: FontWeight.w600,
@@ -612,16 +631,34 @@ class SettingWidget extends StatelessWidget {
     );
   }
 
-  void onDueInDaysChange(value) {
-    _dueInDays.value = value;
+  void onDueInDaysChange(BuildContext context,value) async{
+    showProgress(context);
+    var _result = await FirebaseService.updateSettingDueInDays(value);
+    Navigator.pop(context);
+    if(_result){
+      _dueInDays.value = value;
+      userModel.userSettings.dueInDays = value;
+    }
   }
 
-  void onDateFormatChanged(value) {
-    _dateFormat.value = value;
+  void onDateFormatChanged(BuildContext context,value) async{
+    showProgress(context);
+    var _result = await FirebaseService.updateSettingDateFormat(value);
+    Navigator.pop(context);
+    if(_result){
+      _dateFormat.value = value;
+      userModel.userSettings.dateFormat = value;
+    }
   }
 
-  void onLanguageChanged(value) {
-    _language.value = value;
+  void onLanguageChanged(BuildContext context,value) async{
+    showProgress(context);
+    var _result = await FirebaseService.updateSettingLanguage(value);
+    Navigator.pop(context);
+    if(_result){
+      _language.value = value;
+      userModel.userSettings.language = value;
+    }
   }
 
   void commonDialog(BuildContext context,DialogType dialogType) {
@@ -633,12 +670,22 @@ class SettingWidget extends StatelessWidget {
           bills: list,
         dialogType: dialogType,));
   }
-  void onSendMeCopyChanged(bool value) {
-    _sendMeCopy.value = value;
+  void onSendMeCopyChanged(BuildContext context,bool value) async{
+    showProgress(context);
+    var _result = await FirebaseService.updateSettingSendMeCopy(value);
+    Navigator.pop(context);
+    if(_result){
+      _sendMeCopy.value = value;
+      userModel.userSettings.sendMeCopy = value;
+    }
   }
 
   void onUserAccountTap(BuildContext context) {
     showDialog(context: context,
         builder: (context) => UserAccountDialog());
+  }
+
+  void onLogoutTap(BuildContext context) {
+    // FirebaseService.logOut(context);
   }
 }

@@ -68,14 +68,3 @@ Future<String> getDateFromDatePicker(BuildContext context,DateTime initialDate) 
       firstDate: DateTime(1999),
       lastDate: DateTime(2025)));
 }
-
-Future<void> saveUser(UserModel userObject) async {
-  final String str = jsonEncode(userObject.toJson());
-  print('user ===> $str');
-  await SaveValue.string(Keys.user, str);
-  Constants.userModel = userObject;
-}
-Future<void> getUser() async {
-  String str = await GetValue.string(Keys.user);
-  Constants.userModel = UserModel.fromJson(jsonDecode(str));
-}

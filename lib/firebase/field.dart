@@ -9,5 +9,10 @@ class Field{
   static String updatedAt = 'updated_at';
   static String createdAt = 'created_at';
   static String settingDefaultNote = 'setting_default_note';
+  static String settingSendMeCopy = 'send_me_copy';
+  static String settingDueInDays = 'due_in_days';
+  static String settingDateFormat = 'date_format';
+  static String settingLanguage = 'language';
+  static String settings = 'settings';
   // static String userId = 'user_id';
 }

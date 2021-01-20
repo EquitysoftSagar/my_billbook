@@ -12,12 +12,19 @@ class HomePageProvider with ChangeNotifier{
   bool _secondTax = false;
   int _taxInclusiveDeductible = 0;
   bool _isInvoiceWidget = false;
+  bool _billsLoaded = false;
 
   Widget get rideSideWidget => _rightSideScreen;
   bool get gstIncluded => _gstIncluded;
   bool get secondTax => _secondTax;
   bool get isInvoiceWidget => _isInvoiceWidget;
+  bool get billsLoaded => _billsLoaded;
   int get taxInclusiveDeductible => _taxInclusiveDeductible;
+
+  set billsLoaded(bool newValue){
+    _billsLoaded = newValue;
+    notifyListeners();
+  }
 
   set rideSideWidget(Widget newWidget){
     _rightSideScreen = newWidget;

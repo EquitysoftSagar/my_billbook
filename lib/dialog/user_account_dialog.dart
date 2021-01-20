@@ -12,8 +12,8 @@ class UserAccountDialog extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    _firstNameController.text = Constants.userModel.firstName;
-    _lastNameController.text = Constants.userModel.lastName;
+    _firstNameController.text = userModel.firstName ?? '';
+    _lastNameController.text = userModel.lastName ?? '';
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),

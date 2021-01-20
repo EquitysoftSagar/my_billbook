@@ -9,6 +9,6 @@ class Constants{
 
 //token
 static String userDocId = '';
-static UserModel userModel;
 static String indianCurrencySymbol = '₹';
 }
+UserModel userModel = UserModel();

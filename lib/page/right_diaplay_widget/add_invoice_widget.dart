@@ -67,7 +67,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       _invoiceController.text = d.invoice;
       _poController.text = d.po;
       _dateController.text = DateFormat('dd-MM-yyyy').format(d.date.toDate());
-      _dueOnDateController.text = d.dueDate != null ? DateFormat('dd-MM-yyyy').format(d.dueDate.toDate()) : DateFormat('dd-MM-yyyy').format(d.date.toDate().add(Duration(days: 6)));
+      _dueOnDateController.text = d.dueDate != null ? DateFormat('dd-MM-yyyy').format(d.dueDate.toDate()) : DateFormat('dd-MM-yyyy').format(d.date.toDate().add(Duration(days: int.parse(userModel.userSettings.dueInDays))));
       _removeDueDate = d.dueDate == null ? true : false;
       _noteController.text = d.note;
       _customer = d.customer;
@@ -77,7 +77,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       _recurring = d.recurring;
     }else{
       _dateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-      _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 6)));
+      _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: userModel.userSettings.dueInDays == 'Same Day' ? 0 :  int.parse(userModel.userSettings.dueInDays))));
     }
   }
 
@@ -704,7 +704,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     DateTime _initialDate = DateFormat('dd-MM-yyyy').parse(_dateController.text);
     _dateController.text = await getDateFromDatePicker(context,_initialDate);
     _initialDate = DateFormat('dd-MM-yyyy').parse(_dateController.text);
-    DateTime _dueDate = _initialDate.add(Duration(days: 6));
+    DateTime _dueDate = _initialDate.add(Duration(days: userModel.userSettings.dueInDays == 'Same Day' ? 0 : int.parse(userModel.userSettings.dueInDays)));
     _dueOnDateController.text = DateFormat('dd-MM-yyyy').format(_dueDate);
   }
 

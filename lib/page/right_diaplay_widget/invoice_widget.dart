@@ -141,31 +141,29 @@ class _InvoiceWidgetState extends State<InvoiceWidget> {
                     StreamBuilder(
                       stream: FirebaseService.getDocuments(widget.id),
                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }else if(snapshot.data.docs.length == 0){
-                          return Text(
+                        if(snapshot.hasData){
+                          return snapshot.data.docs.length == 0 ? Text(
                             'No Document',
                             style: TextStyle(
                                 color: MyColors.invoiceTxt,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 20.0),
-                          );
-                        }else{
-                          return Flexible(
+                          ) : Flexible(
                               child: ListView.builder(
                                 itemBuilder: (BuildContext context, int index) {
                                   return InvoiceListItemViewWidget(
-                                    index: index,
-                                    id: snapshot.data.docs[index].id,
-                                    onItemTap: onListTap,
-                                    documents:Documents.fromJson( snapshot.data.docs[index].data())
+                                      index: index,
+                                      id: snapshot.data.docs[index].id,
+                                      onItemTap: onListTap,
+                                      documents:Documents.fromJson( snapshot.data.docs[index].data())
                                   );
                                 },
                                 itemCount: snapshot.data.docs.length,
                               ));
+                        }else{
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                       },),
                   ],

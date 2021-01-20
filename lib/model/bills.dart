@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'document.dart';
 
 class Bills {
@@ -7,6 +9,8 @@ class Bills {
   String settingDefaultNote;
   String settingDefaultTermsAndCondition;
   String settingDefaultEmailMessage;
+  Timestamp createdAt;
+  Timestamp updatedAt;
   int settingNext;
   String id;
 
@@ -16,6 +20,8 @@ class Bills {
       this.settingNext = 1,
       this.settingPrefix = '',
       this.settingDefaultNote = '',
+        this.createdAt,
+        this.updatedAt,
       this.settingDefaultEmailMessage = '',
       this.settingDefaultTermsAndCondition = '',
       this.id = ''});
@@ -25,6 +31,8 @@ class Bills {
     userId = json['user_id'];
     settingPrefix = json['setting_prefix'];
     settingNext = json['setting_next'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
     settingDefaultNote = json['setting_default_note'];
     settingDefaultTermsAndCondition =
         json['setting_default_terms_and_condition'];
@@ -37,6 +45,8 @@ class Bills {
     data['user_id'] = this.userId;
     data['setting_prefix'] = this.settingPrefix;
     data['setting_next'] = this.settingNext;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     data['setting_default_note'] = this.settingDefaultNote;
     data['setting_default_terms_and_condition'] =
         this.settingDefaultTermsAndCondition;

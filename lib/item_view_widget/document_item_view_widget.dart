@@ -9,8 +9,9 @@ class DocumentItemViewWidget extends StatelessWidget {
   final int index;
   final String id;
   final Function onTap;
+  final int lenght;
 
-  DocumentItemViewWidget({Key key, this.bills,this.index,this.id,this.onTap}) : super(key: key);
+  DocumentItemViewWidget({Key key, this.bills,this.index,this.id,this.onTap,this.lenght}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,6 @@ class DocumentItemViewWidget extends StatelessWidget {
   }
 
   void onMenuTap(BuildContext context) {
-    showDialog(context: context,builder: (context) => EditDocumentDialog(bills: bills,id: id,index: index,));
+    showDialog(context: context,builder: (context) => EditDocumentDialog(bills: bills,id: id,index: index,length: lenght,));
   }
 }
