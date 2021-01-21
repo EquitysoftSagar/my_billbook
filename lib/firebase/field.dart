@@ -14,5 +14,6 @@ class Field{
   static String settingDateFormat = 'date_format';
   static String settingLanguage = 'language';
   static String settings = 'settings';
+  static String companyInformation = 'company_information';
   // static String userId = 'user_id';
 }

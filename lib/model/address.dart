@@ -7,12 +7,12 @@ class AddressModel {
   String country;
 
   AddressModel(
-      {this.address1,
-        this.address2,
-        this.city,
-        this.state,
-        this.zip,
-        this.country});
+      {this.address1 = '',
+        this.address2 = '',
+        this.city = '',
+        this.state = '',
+        this.zip = '',
+        this.country = ''});
 
   AddressModel.fromJson(Map<String, dynamic> json) {
     address1 = json['address1'];

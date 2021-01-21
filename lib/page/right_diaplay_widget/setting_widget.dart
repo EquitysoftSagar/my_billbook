@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_billbook/dialog/company_information_dialog.dart';
 import 'package:my_billbook/dialog/invoice_setting_dialog.dart';
 import 'package:my_billbook/dialog/user_account_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/model/company_information.dart';
 import 'package:my_billbook/provider/invoice_number_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/util/constants.dart';
@@ -125,7 +127,9 @@ class SettingWidget extends StatelessWidget {
                         color: Colors.transparent,
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
+                          onTap: () {
+                            onCompanyInformationTap(context);
+                          },
                           title: Text(
                             'Company Information',
                             style: TextStyle(
@@ -687,5 +691,9 @@ class SettingWidget extends StatelessWidget {
 
   void onLogoutTap(BuildContext context) {
     // FirebaseService.logOut(context);
+  }
+
+  void onCompanyInformationTap(BuildContext context) {
+    showDialog(context: context,builder: (context) => CompanyInformationDialog());
   }
 }

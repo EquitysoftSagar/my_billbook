@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/collection.dart';
 import 'package:my_billbook/firebase/field.dart';
 import 'package:my_billbook/model/bills.dart';
+import 'package:my_billbook/model/company_information.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/item.dart';
@@ -456,5 +457,19 @@ class FirebaseService {
       return;
     }
     toastError('Something Error when Logout');
+  }
+
+  static Future<bool> updateCompanyInformation(CompanyInformation companyInformation) async {
+    try {
+      await _firebaseFirestore.collection(Collection.user).doc(firebaseUser.uid).update({
+       Field.companyInformation:companyInformation.toJson()
+      });
+      toastSuccess('Update successfully');
+      return true;
+    } catch (e) {
+      toastError('Error when updating company information');
+      print('Catch on update company information ==>$e');
+      return false;
+    }
   }
 }

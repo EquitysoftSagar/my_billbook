@@ -88,12 +88,12 @@ class SignUpPage extends StatelessWidget {
       var u = UserModel();
       u.firstName = _firstNameController.text;
       u.lastName = _lastNameController.text;
-      u.companyName = _companyNameController.text;
       u.email = _emailController.text;
-      u.displayEmail = _displayEmailController.text;
       u.password = _passwordController.text;
-      u.status = 1;
+      u.companyInformation.companyName = _companyNameController.text;
+      u.companyInformation.emailOnInvoice = _displayEmailController.text;
       u.userSettings = UserSettings();
+      u.status = 1;
       u.createdAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
       u.updatedAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
 

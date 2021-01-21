@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/settings_bills_text_field.dart';
+import 'package:my_billbook/ui/invoice_number_text_field.dart';
 
 class SettingsInvoiceNumberItemView extends StatelessWidget {
   final Bills bills;
@@ -30,7 +30,7 @@ class SettingsInvoiceNumberItemView extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: SettingsBillsTextField(
+                child: InvoiceNumberTextField(
                   labelText: 'Prefix',
                   controller: _prefixController,
                   onChanged: onPrefixChanged,
@@ -38,7 +38,7 @@ class SettingsInvoiceNumberItemView extends StatelessWidget {
               ),
               SizedBox(width: 20,),
               Expanded(
-                child: SettingsBillsTextField(
+                child: InvoiceNumberTextField(
                   labelText: 'Next #',
                   controller: _nextController,
                   onChanged: onNextChanged,

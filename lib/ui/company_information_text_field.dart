@@ -2,21 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_billbook/style/colors.dart';
 
-class SettingsBillsTextField extends StatelessWidget {
+class CompanyInformationTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
-  final ValueChanged<String> onChanged;
   final _borderRadius = 5.0;
   final _borderWidth = 1.5;
 
-  const SettingsBillsTextField({Key key, this.labelText, this.controller,this.onChanged}) : super(key: key);
+  const CompanyInformationTextField({Key key, this.labelText, this.controller}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
-      onChanged: onChanged,
-      inputFormatters: labelText == 'Next #' ? <TextInputFormatter>[
+      inputFormatters: labelText == 'Zip' || labelText == 'Phone Number' || labelText == 'Business Number' ? <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ]:[],
       decoration: InputDecoration(
