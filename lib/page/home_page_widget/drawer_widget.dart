@@ -78,6 +78,8 @@ class DrawerWidget extends StatelessWidget {
                     _provider.rideSideWidget = SettingWidget();
                   }
               ));
+    }else{
+      _provider.rideSideWidget = SettingWidget();
     }
   }
 }
