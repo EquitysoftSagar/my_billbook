@@ -1,10 +1,13 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/dialog/add_tax_discount_dialog.dart';
 import 'package:my_billbook/dialog/alert_dialog.dart';
+import 'package:my_billbook/dialog/preview_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/item_view_widget/invoice_item_view_widget.dart';
 import 'package:my_billbook/model/bills.dart';
@@ -15,12 +18,14 @@ import 'package:my_billbook/model/photo.dart';
 import 'package:my_billbook/model/tax_discount_shipping.dart';
 import 'package:my_billbook/page/add_invoce_widget/invoice_customer_view_widget.dart';
 import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
+import 'package:my_billbook/pdf/pdf_creator.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/invoice_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 import 'package:provider/provider.dart';
+
 
 class AddInvoiceWidget extends StatefulWidget {
 
@@ -49,6 +54,8 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   final _noteController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<State<StatefulWidget>> _printKey = GlobalKey();
+
 
   Customer _customer;
   List<InvoiceItemModel> _invoiceItem = [];
@@ -118,7 +125,22 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                         fontSize: 25.0),
                   ),
                   Spacer(),
-                  RaisedButton(
+                  Tooltip(
+                    message: 'Preview',
+                    child: FloatingActionButton(onPressed: (){
+                      onPreviewTap(context);
+                    }, elevation: 0,
+                      child: Icon(Icons.preview,color: Colors.white,),),
+                  ),
+                  SizedBox(width: 10,),
+                  Tooltip(
+                    message: 'Save',
+                    child: FloatingActionButton(onPressed: (){
+                      onSaveTap(context);
+                    }, elevation: 0,
+                    child: Icon(Icons.save,color: Colors.white,),),
+                  )
+                  /*RaisedButton(
                     onPressed: () {
                       onSaveTap(context);
                     },
@@ -127,7 +149,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                       style: TextStyle(color: Colors.white),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  )
+                  )*/
                 ],
               ),
               Container(
@@ -799,11 +821,27 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       }
     });
   }
+
   Future<List<String>> getItemsId()async{
     List<String> _list = [];
     for(InvoiceItemModel i in _invoiceItem){
       _list.add(i.id);
     }
     return _list;
+  }
+
+  // Widget _printView() => PdfView(printKey: _printKey,);
+
+
+  void onPreviewTap(BuildContext context)async{
+    showProgress(context);
+    MyPdf.create(widget.bills.name).then((value){
+      Navigator.pop(context);
+      if(value != null){
+        showDialog(
+            context: context,
+            builder: (context) => PreviewDialog(uint8list: value,));
+      }
+    });
   }
 }
