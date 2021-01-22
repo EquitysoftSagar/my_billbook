@@ -170,6 +170,7 @@ class _InvoiceCustomerViewWidgetState extends State<InvoiceCustomerViewWidget> {
       if(value != null){
         setState(() {
           _customer = value;
+          widget.onSetCustomer(_customer);
         });
       }
     });

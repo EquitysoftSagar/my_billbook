@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -67,4 +68,11 @@ Future<String> getDateFromDatePicker(BuildContext context,DateTime initialDate) 
       initialDate: initialDate,
       firstDate: DateTime(1999),
       lastDate: DateTime(2025)));
+}
+String timeStampToString(String format,Timestamp timestamp){
+  var dateTime = timestamp.toDate();
+  return DateFormat(format).format(dateTime);
+}
+String dateTimeToString(String format,DateTime dateTime){
+  return DateFormat(format).format(dateTime);
 }

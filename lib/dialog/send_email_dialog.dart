@@ -1,36 +1,29 @@
-import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/send_email_dialog.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/methods.dart';
-import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
-// import 'dart:html' as html;
+import 'package:my_billbook/ui/send_email_text_field.dart';
 
+class SendEmailDialog extends StatelessWidget {
+  final String fileName;
+  final String recipientEmail;
+  final _recipientController = TextEditingController();
+  final _messageController = TextEditingController();
 
-
-class PreviewDialog extends StatelessWidget {
-  final Uint8List uint8list;
-  final String billName;
-  final String invoiceNumber;
-
-  PreviewDialog({Key key, this.uint8list,this.billName,this.invoiceNumber}) : super(key: key);
+  SendEmailDialog({Key key, this.fileName,this.recipientEmail}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
+    _recipientController.text = recipientEmail;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       child: Container(
-        width: 700,
+        width: 400,
         padding: EdgeInsets.only(
           bottom: 15,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: double.infinity,
@@ -43,21 +36,42 @@ class PreviewDialog extends StatelessWidget {
                     topRight: Radius.circular(8),
                   )),
               padding: EdgeInsets.only(left: 20),
-              child: SingleChildScrollView(
-                child: Text(
-                  'Preview',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
-                ),
+              margin: EdgeInsets.only(bottom: 20),
+              child: Text(
+                'Send',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600),
               ),
             ),
-            Flexible(
-              child: PdfPreview(
-                build: (PdfPageFormat format) {
-                return uint8list;
-              },),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(fileName,
+                      style: TextStyle(
+                          color: MyColors.text,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600)),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SendEmailTextField(
+                    labelText: 'Recipient',
+                    controller: _recipientController,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SendEmailTextField(
+                    labelText: 'Message',
+                    controller: _messageController,
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 20,
@@ -94,17 +108,7 @@ class PreviewDialog extends StatelessWidget {
       ),
     );
   }
-  void onSendTap(BuildContext context) async{
-    // final blob =  html.Blob([uint8list],'application/pdf');
-    // final url = html.Url.createObjectUrlFromBlob(blob);
-    // html.window.open(url, "_blank");
-    // html.Url.revokeObjectUrl(url);
-    // showProgress(context);
-    final _fileName = '$billName#$invoiceNumber.pdf';
-    // var _result = await FirebaseService.uploadPdf(uint8list,_fileName);
-    // if(_result != null){
-    //   print('pdf link ===> $_result}');
-    // }
-    Navigator.pop(context,_fileName);
+  void onSendTap(BuildContext context) {
+
   }
 }

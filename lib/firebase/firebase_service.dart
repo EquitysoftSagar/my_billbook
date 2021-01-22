@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/collection.dart';
 import 'package:my_billbook/firebase/field.dart';
@@ -19,10 +23,12 @@ User firebaseUser;
 class FirebaseService {
   static FirebaseAuth _firebaseAuth;
   static FirebaseFirestore _firebaseFirestore;
+  static FirebaseStorage _firebaseStorage;
 
   static void init() {
     _firebaseAuth = FirebaseAuth.instance;
     _firebaseFirestore = FirebaseFirestore.instance;
+    _firebaseStorage = FirebaseStorage.instance;
   }
 
   static Future<bool> signIn(String email, String password) async {
@@ -470,6 +476,20 @@ class FirebaseService {
       toastError('Error when updating company information');
       print('Catch on update company information ==>$e');
       return false;
+    }
+  }
+  static Future<String> uploadPdf(Uint8List uint8list,String fileName)async{
+    try {
+      var _task = await _firebaseStorage
+          .ref('users_pdf/$fileName')
+          .putData(uint8list, SettableMetadata(contentType: "application/pdf"));
+      toastSuccess('Upload Successfully');
+      return _task.ref.getDownloadURL();
+    } on FirebaseException catch (e) {
+      toastError('Error when uploading pdf file');
+      print('error when uploading pdf file ===> $e}');
+      return null;
+      // e.g, e.code == 'canceled'
     }
   }
 }

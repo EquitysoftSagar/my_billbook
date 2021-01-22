@@ -8,6 +8,7 @@ import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/dialog/add_tax_discount_dialog.dart';
 import 'package:my_billbook/dialog/alert_dialog.dart';
 import 'package:my_billbook/dialog/preview_dialog.dart';
+import 'package:my_billbook/dialog/send_email_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/item_view_widget/invoice_item_view_widget.dart';
 import 'package:my_billbook/model/bills.dart';
@@ -835,12 +836,16 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
 
   void onPreviewTap(BuildContext context)async{
     showProgress(context);
-    MyPdf.create(widget.bills.name).then((value){
+    MyPdf(documents: widget.documents,billName: widget.bills.name).create().then((value){
       Navigator.pop(context);
       if(value != null){
         showDialog(
             context: context,
-            builder: (context) => PreviewDialog(uint8list: value,));
+            builder: (context) => PreviewDialog(uint8list: value,billName: widget.bills.name,invoiceNumber: widget.documents.invoice,)).then((value){
+              if(value != null){
+                showDialog(context: context,builder: (context) => SendEmailDialog(fileName: value,recipientEmail: _customer.email));
+              }
+        });
       }
     });
   }
