@@ -1,13 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_billbook/dialog/send_email_dialog.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/methods.dart';
-import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
-// import 'dart:html' as html;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 
 
@@ -20,13 +18,13 @@ class PreviewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final blob =  html.Blob([uint8list],'application/pdf');
+    final url = html.Url.createObjectUrlFromBlob(blob);
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       child: Container(
-        width: 700,
         padding: EdgeInsets.only(
           bottom: 15,
         ),
@@ -54,10 +52,16 @@ class PreviewDialog extends StatelessWidget {
               ),
             ),
             Flexible(
-              child: PdfPreview(
+              child: /*PdfPreview(
                 build: (PdfPageFormat format) {
                 return uint8list;
-              },),
+              },),*/
+              EasyWebView(
+                src: url,
+                onLoaded: () { }, // Try to convert to flutter widgets
+                // width: 100,
+                // height: 100,
+              ),
             ),
             SizedBox(
               height: 20,
@@ -95,16 +99,8 @@ class PreviewDialog extends StatelessWidget {
     );
   }
   void onSendTap(BuildContext context) async{
-    // final blob =  html.Blob([uint8list],'application/pdf');
-    // final url = html.Url.createObjectUrlFromBlob(blob);
-    // html.window.open(url, "_blank");
-    // html.Url.revokeObjectUrl(url);
-    // showProgress(context);
+
     final _fileName = '$billName#$invoiceNumber.pdf';
-    // var _result = await FirebaseService.uploadPdf(uint8list,_fileName);
-    // if(_result != null){
-    //   print('pdf link ===> $_result}');
-    // }
     Navigator.pop(context,_fileName);
   }
 }

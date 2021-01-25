@@ -8,7 +8,6 @@ import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:printing/printing.dart';
 
 class MyPdf{
 
@@ -159,7 +158,7 @@ class MyPdf{
                     thickness: 2,
                     height: 20,
                   ),
-                  if(documents.total.isNotEmpty)Row(
+                  if(documents.total != 0)Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Net',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
@@ -167,7 +166,7 @@ class MyPdf{
                       ]
                   ),
                   SizedBox(height: 5),
-                  if(documents.total.isNotEmpty)Row(
+                  if(documents.total != 0)Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Total',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),

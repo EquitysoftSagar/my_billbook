@@ -24,6 +24,22 @@ class TaxDiscountTextField extends StatelessWidget {
       // validator: (value){
       //
       // },
+      validator: (value){
+        switch(labelText){
+          case "Tax label *":
+            if(value.isEmpty){
+              return "Please enter tax label";
+            }
+            return null;
+          case "Second Tax label":
+            if(value.isEmpty){
+              return "Please enter tax label";
+            }
+            return null;
+          default:
+            return null;
+        }
+      },
       decoration: InputDecoration(
           isDense: true,
           counterText: '',

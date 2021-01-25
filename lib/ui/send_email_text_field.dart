@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_billbook/style/colors.dart';
+import 'package:my_billbook/util/constants.dart';
 
 class SendEmailTextField extends StatelessWidget {
   final String labelText;
@@ -25,6 +25,8 @@ class SendEmailTextField extends StatelessWidget {
           case 'Recipient':
             if(value.isEmpty){
               return 'Please enter recipient email';
+            }else if(!Constants.emailRegExp.hasMatch(value)){
+              return 'Enter valid email';
             }
             return null;
           default:

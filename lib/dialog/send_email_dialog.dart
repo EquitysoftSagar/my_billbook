@@ -1,14 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/ui/send_email_text_field.dart';
+import 'package:my_billbook/util/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SendEmailDialog extends StatelessWidget {
   final String fileName;
   final String recipientEmail;
+  final Uint8List uint8list;
   final _recipientController = TextEditingController();
   final _messageController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  SendEmailDialog({Key key, this.fileName,this.recipientEmail}) : super(key: key);
+  SendEmailDialog({Key key, this.fileName,this.recipientEmail,this.uint8list}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,30 +53,33 @@ class SendEmailDialog extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(fileName,
-                      style: TextStyle(
-                          color: MyColors.text,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600)),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SendEmailTextField(
-                    labelText: 'Recipient',
-                    controller: _recipientController,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SendEmailTextField(
-                    labelText: 'Message',
-                    controller: _messageController,
-                  ),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(fileName,
+                        style: TextStyle(
+                            color: MyColors.text,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600)),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SendEmailTextField(
+                      labelText: 'Recipient',
+                      controller: _recipientController,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SendEmailTextField(
+                      labelText: 'Message',
+                      controller: _messageController,
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -108,7 +117,13 @@ class SendEmailDialog extends StatelessWidget {
       ),
     );
   }
-  void onSendTap(BuildContext context) {
-
+  void onSendTap(BuildContext context)async{
+    if(_formKey.currentState.validate()){
+      String  _body = _messageController.text;
+      _body = _body.replaceAll(" ", "%20");
+      var _email = 'mailto:smeetpanchal857@gmail.com?subject=Invoice%20from%20${userModel.firstName}&body=$_body';
+      print('Email ===> $_email');
+      launch(_email);
+    }
   }
 }

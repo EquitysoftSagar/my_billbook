@@ -16,6 +16,7 @@ import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/photo.dart';
+import 'package:my_billbook/model/second_tax.dart';
 import 'package:my_billbook/model/tax_discount_shipping.dart';
 import 'package:my_billbook/page/add_invoce_widget/invoice_customer_view_widget.dart';
 import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
@@ -60,6 +61,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
 
   Customer _customer;
   List<InvoiceItemModel> _invoiceItem = [];
+  TaxDiscountShipping taxDiscountShipping = TaxDiscountShipping();
   List<Photo> _photoList = [];
   bool _removeDueDate = false;
   bool _mySignature = false;
@@ -78,6 +80,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       _dueOnDateController.text = d.dueDate != null ? DateFormat('dd-MM-yyyy').format(d.dueDate.toDate()) : DateFormat('dd-MM-yyyy').format(d.date.toDate().add(Duration(days: int.parse(userModel.userSettings.dueInDays))));
       _removeDueDate = d.dueDate == null ? true : false;
       _noteController.text = d.note;
+      taxDiscountShipping = d.taxDiscountShipping;
       _customer = d.customer;
       _invoiceItem = d.item;
       _mySignature = d.mySignature;
@@ -420,7 +423,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                               fontSize: 13),
                                         ),
                                         Text(
-                                          '${Constants.indianCurrencySymbol}${_getSubTotal()}',
+                                          '${Constants.indianCurrencySymbol}${_getSubTotal().toStringAsFixed(2)}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: MyColors.text,
@@ -432,37 +435,61 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    // Row(
-                                    //   mainAxisAlignment:
-                                    //   MainAxisAlignment.spaceBetween,
-                                    //   children: [
-                                    //     Text(
-                                    //       'Discount (10%)',
-                                    //       textAlign: TextAlign.right,
-                                    //       style: TextStyle(
-                                    //           color: MyColors.text,
-                                    //           fontWeight: FontWeight.w500,
-                                    //           fontSize: 13),
-                                    //     ),
-                                    //     Text(
-                                    //       '₹0.00',
-                                    //       textAlign: TextAlign.right,
-                                    //       style: TextStyle(
-                                    //           color: MyColors.text,
-                                    //           fontWeight: FontWeight.w500,
-                                    //           fontSize: 13),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 15,
-                                    // ),
-                                    Row(
+                                    if(taxDiscountShipping.discount != 0)Padding(
+                                      padding: const EdgeInsets.only(bottom: 15),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Discount',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                                color: MyColors.text,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13),
+                                          ),
+                                          Text(
+                                            '₹${taxDiscountShipping.discount.toStringAsFixed(2)}',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                                color: MyColors.text,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if(taxDiscountShipping.shipping != 0)Padding(
+                                      padding: const EdgeInsets.only(bottom: 15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'shipping',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                                color: MyColors.text,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13),
+                                          ),
+                                          Text(
+                                            '₹${taxDiscountShipping.shipping.toStringAsFixed(2)}',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                                color: MyColors.text,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                   Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Tax (0%)',
+                                          '${taxDiscountShipping.taxLabel} (${taxDiscountShipping.tax}%)',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: MyColors.text,
@@ -470,7 +497,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                               fontSize: 13),
                                         ),
                                         Text(
-                                          '₹0.00',
+                                          '₹${taxDiscountShipping.tax.toStringAsFixed(2)}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: MyColors.text,
@@ -482,31 +509,6 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    // Row(
-                                    //   mainAxisAlignment:
-                                    //   MainAxisAlignment.spaceBetween,
-                                    //   children: [
-                                    //     Text(
-                                    //       'shipping',
-                                    //       textAlign: TextAlign.right,
-                                    //       style: TextStyle(
-                                    //           color: MyColors.text,
-                                    //           fontWeight: FontWeight.w500,
-                                    //           fontSize: 13),
-                                    //     ),
-                                    //     Text(
-                                    //       '₹0.00',
-                                    //       textAlign: TextAlign.right,
-                                    //       style: TextStyle(
-                                    //           color: MyColors.text,
-                                    //           fontWeight: FontWeight.w500,
-                                    //           fontSize: 13),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 15,
-                                    // ),
                                     Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -520,7 +522,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                               fontSize: 13),
                                         ),
                                         Text(
-                                          '${Constants.indianCurrencySymbol}${_getSubTotal()}',
+                                          '${Constants.indianCurrencySymbol}${_getSubTotal().toStringAsFixed(2)}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: MyColors.text,
@@ -537,7 +539,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                       MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Amount Due',
+                                          'Grand Total',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: MyColors.text,
@@ -545,7 +547,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                                               fontSize: 15),
                                         ),
                                         Text(
-                                          '${Constants.indianCurrencySymbol}${_getSubTotal()}',
+                                          '${Constants.indianCurrencySymbol}${_getGrandTotal().toStringAsFixed(2)}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: Colors.green,
@@ -680,7 +682,11 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   void onTaxAndDiscountTap(BuildContext context) {
     showDialog(
         context: context,
-        builder: (context) => AddTaxDiscountDialog());
+        builder: (context) => AddTaxDiscountDialog(taxDiscountShipping: taxDiscountShipping,)).then((value){
+          if(value != null){
+            setState(() {});
+          }
+    });
   }
   void onAddItemTap() {
     showDialog(
@@ -705,6 +711,14 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     for(InvoiceItemModel i in _invoiceItem){
       _total = _total + int.parse(i.amount);
     }
+    return _total;
+  }
+
+  int _getGrandTotal(){
+    int _total = 0;
+    // for(InvoiceItemModel i in _invoiceItem){
+    //   _total = _total + int.parse(i.amount);
+    // }
     return _total;
   }
 
@@ -757,7 +771,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     d.dueDate = _removeDueDate ? null : Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dueOnDateController.text));
     d.customer = _customer;
     d.item = _invoiceItem;
-    d.subTotal = _getSubTotal().toString();
+    d.subTotal = _getSubTotal().toDouble();
     d.total = d.subTotal;
     d.amountDue = d.total;
     d.mySignature = _mySignature;
@@ -766,6 +780,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     d.note = _noteController.text;
     d.photo = _photoList;
     d.taxDiscountShipping = TaxDiscountShipping();
+    d.taxDiscountShipping.secondTax = SecondTax();
     d.createdAt = widget.forEdit ? widget.documents.updatedAt : Timestamp.fromDate(DateTime.now());
     d.updatedAt = Timestamp.fromDate(DateTime.now());
     d.status = 1;
@@ -833,17 +848,16 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
 
   // Widget _printView() => PdfView(printKey: _printKey,);
 
-
   void onPreviewTap(BuildContext context)async{
     showProgress(context);
-    MyPdf(documents: widget.documents,billName: widget.bills.name).create().then((value){
+    MyPdf(documents: widget.documents,billName: widget.bills.name).create().then((uint8list){
       Navigator.pop(context);
-      if(value != null){
+      if(uint8list != null){
         showDialog(
             context: context,
-            builder: (context) => PreviewDialog(uint8list: value,billName: widget.bills.name,invoiceNumber: widget.documents.invoice,)).then((value){
+            builder: (context) => PreviewDialog(uint8list: uint8list,billName: widget.bills.name,invoiceNumber: widget.documents.invoice,)).then((value){
               if(value != null){
-                showDialog(context: context,builder: (context) => SendEmailDialog(fileName: value,recipientEmail: _customer.email));
+                showDialog(context: context,builder: (context) => SendEmailDialog(fileName: value,recipientEmail: _customer.email,uint8list: uint8list,));
               }
         });
       }

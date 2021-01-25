@@ -10,9 +10,9 @@ class Documents {
   String po;
   Timestamp date;
   Timestamp dueDate;
-  String subTotal;
-  String total;
-  String amountDue;
+  double subTotal;
+  double total;
+  double amountDue;
   TaxDiscountShipping taxDiscountShipping;
   Customer customer;
   List<InvoiceItemModel> item;
