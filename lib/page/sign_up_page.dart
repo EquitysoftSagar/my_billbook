@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
+import 'package:my_billbook/model/address.dart';
+import 'package:my_billbook/model/company_information.dart';
 import 'package:my_billbook/model/user.dart';
 import 'package:my_billbook/model/user_settings.dart';
 import 'package:my_billbook/page/home_page.dart';
@@ -86,12 +88,16 @@ class SignUpPage extends StatelessWidget {
     if(_formKey.currentState.validate()){
       showProgress(context);
       var u = UserModel();
+      var c = CompanyInformation();
+      var a = AddressModel();
       u.firstName = _firstNameController.text;
       u.lastName = _lastNameController.text;
       u.email = _emailController.text;
       u.password = _passwordController.text;
-      u.companyInformation.companyName = _companyNameController.text;
-      u.companyInformation.emailOnInvoice = _displayEmailController.text;
+      c.companyName = _companyNameController.text;
+      c.emailOnInvoice = _displayEmailController.text;
+      c.address = a;
+      u.companyInformation = c;
       u.userSettings = UserSettings();
       u.status = 1;
       u.createdAt = Timestamp.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);

@@ -137,7 +137,7 @@ class _CustomerDialogState extends State<CustomerDialog> {
                         CustomerTextField(controller: _businessNumberController,labelText: 'Business Number',),SizedBox(height: 20,),
                         CustomerTextField(controller: _additionalInformationController,labelText: 'Additional information',),SizedBox(height: 20,),
                         Text(
-                          'AddressModel',
+                          'Address',
                           style: TextStyle(
                               color: MyColors.invoiceTxt,
                               fontSize: 20,
@@ -145,13 +145,13 @@ class _CustomerDialogState extends State<CustomerDialog> {
                         ),
                         SizedBox(height: 20,),
                         CustomerTextField(controller: _address1Controller,labelText: 'Address 1',),SizedBox(height: 20,),
-                        CustomerTextField(controller: _address2Controller,labelText: 'Address1 2',),SizedBox(height: 20,),
+                        CustomerTextField(controller: _address2Controller,labelText: 'Address 2',),SizedBox(height: 20,),
                         CustomerTextField(controller: _cityController,labelText: 'City',),SizedBox(height: 20,),
                         CustomerTextField(controller: _stateController,labelText: 'State',),SizedBox(height: 20,),
                         CustomerTextField(controller: _zipController,labelText: 'Zip',),SizedBox(height: 20,),
                         CustomerTextField(controller: _countryController,labelText: 'Country',),SizedBox(height: 20,),
                         Text(
-                          'Shipping AddressModel',
+                          'Shipping Address',
                           style: TextStyle(
                               color: MyColors.invoiceTxt,
                               fontSize: 20,
@@ -316,6 +316,7 @@ class _CustomerDialogState extends State<CustomerDialog> {
         _cityController.text = address.city;
         _stateController.text = address.state;
         _countryController.text = address.country;
+        _zipController.text = address.zip;
 
         AddressModel shippingAddress = customer.shippingAddress;
 
@@ -324,6 +325,8 @@ class _CustomerDialogState extends State<CustomerDialog> {
         _cityShippingController.text = shippingAddress.city;
         _stateShippingController.text = shippingAddress.state;
         _countryShippingController.text = shippingAddress.country;
+        _zipShippingController.text = shippingAddress.zip;
+
 
       }
     });

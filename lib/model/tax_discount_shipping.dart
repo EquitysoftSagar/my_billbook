@@ -2,7 +2,8 @@ import 'second_tax.dart';
 
 class TaxDiscountShipping {
   double discount;
-  int tax;
+  double tax;
+  double taxPercentage;
   String taxLabel;
   double shipping;
   bool inclusive;
@@ -13,9 +14,10 @@ class TaxDiscountShipping {
   TaxDiscountShipping(
       {
         this.discount = 0.00,
-        this.tax = 0,
+        this.tax = 0.0,
+        this.taxPercentage = 0.00,
         this.taxLabel = 'Tax',
-        this.shipping = 0,
+        this.shipping = 0.00,
         this.inclusive = false,
         this.deductible = false,
         this.nonTaxable = false,
@@ -24,6 +26,7 @@ class TaxDiscountShipping {
   TaxDiscountShipping.fromJson(Map<String, dynamic> json) {
     discount = json['discount'];
     tax = json['tax'];
+    taxPercentage = json['tax_percentage'];
     taxLabel = json['tax_label'];
     shipping = json['shipping'];
     inclusive = json['inclusive'];
@@ -38,6 +41,7 @@ class TaxDiscountShipping {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['discount'] = this.discount;
     data['tax'] = this.tax;
+    data['tax_percentage'] = this.taxPercentage;
     data['tax_label'] = this.taxLabel;
     data['shipping'] = this.shipping;
     data['inclusive'] = this.inclusive;

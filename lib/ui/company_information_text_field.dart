@@ -13,10 +13,32 @@ class CompanyInformationTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      maxLength: labelText == 'Phone Number' || labelText == 'Business Number' ? 10 : null,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
       inputFormatters: labelText == 'Zip' || labelText == 'Phone Number' || labelText == 'Business Number' ? <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ]:[],
+      validator: (value){
+        switch(labelText){
+          case 'Company Name':
+            if(value.isEmpty){
+              return 'Company name cannot be blank';
+            }
+            return null;
+          case 'Phone Number':
+            if(value.isNotEmpty && value.length < 10){
+              return 'Enter valid phone number';
+            }
+            return null;
+          case 'Business Number':
+            if(value.isNotEmpty && value.length < 10){
+              return 'Enter valid business number';
+            }
+            return null;
+          default:
+            return null;
+        }
+      },
       decoration: InputDecoration(
           isDense: true,
           counterText: '',

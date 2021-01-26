@@ -38,12 +38,15 @@ class _AddTaxDiscountDialogState extends State<AddTaxDiscountDialog> {
     super.initState();
     _discountController.text = widget.taxDiscountShipping.discount.toString();
     _taxLabelController.text = widget.taxDiscountShipping.taxLabel.toString();
-    _taxController.text = widget.taxDiscountShipping.tax.toString();
+    _taxController.text = widget.taxDiscountShipping.taxPercentage.toString();
     _shippingController.text = widget.taxDiscountShipping.shipping.toString();
+    _nonTaxable = widget.taxDiscountShipping.nonTaxable;
+    _deductible = widget.taxDiscountShipping.deductible;
     _isSecondTax = widget.taxDiscountShipping.secondTax == null ? false : true;
     if(widget.taxDiscountShipping.secondTax != null){
       _secondTaxLabel.text = widget.taxDiscountShipping.secondTax.taxLabel;
-      _secondTax.text = widget.taxDiscountShipping.secondTax.tax.toString();
+      _deductibleSecondTax = widget.taxDiscountShipping.secondTax.deductible;
+      _secondTax.text = widget.taxDiscountShipping.secondTax.taxPercentage.toString();
     }
   }
 
@@ -221,24 +224,27 @@ class _AddTaxDiscountDialogState extends State<AddTaxDiscountDialog> {
     if(_formKey.currentState.validate()){
       widget.taxDiscountShipping.discount = roundDouble(double.parse(_discountController.text.isEmpty ? '0.00' : _discountController.text), 2);
       widget.taxDiscountShipping.taxLabel = _taxLabelController.text;
-      widget.taxDiscountShipping.tax = int.parse(_taxController.text.isEmpty ? '0' : _taxController.text);
+      widget.taxDiscountShipping.taxPercentage = roundDouble(double.parse(_taxController.text.isEmpty ? '0.00' : _taxController.text), 2);
       widget.taxDiscountShipping.shipping = roundDouble(double.parse(_shippingController.text.isEmpty ? '0.00' : _shippingController.text), 2);
       widget.taxDiscountShipping.inclusive = _inclusive;
       widget.taxDiscountShipping.deductible = _deductible;
+      widget.taxDiscountShipping.nonTaxable = _nonTaxable;
       if(_isSecondTax){
         if(_secondTaxFormKey.currentState.validate()){
           var s = SecondTax();
-          s.tax = int.parse(_secondTax.text.isEmpty ? '0' : _secondTax.text);
+          s.taxPercentage = roundDouble(double.parse(_secondTax.text.isEmpty ? '0.00' : _secondTax.text), 2);
           s.taxLabel = _secondTaxLabel.text;
+          s.deductible = _deductibleSecondTax;
           widget.taxDiscountShipping.secondTax = s;
         }else{
           return;
         }
+      }else{
+        widget.taxDiscountShipping.secondTax = null;
       }
       Navigator.pop(context,true);
     }
   }
-
   void onInclusiveChanged(bool value) {
     setState(() {
       _inclusive = value;

@@ -69,7 +69,7 @@ class InvoiceListItemViewWidget extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text( // amount
-                '${Constants.indianCurrencySymbol}${documents.amountDue}',
+                '₹${documents.amountDue.toStringAsFixed(2)}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.green,

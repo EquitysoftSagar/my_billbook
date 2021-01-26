@@ -21,6 +21,7 @@ class CompanyInformationDialog extends StatelessWidget {
   final _stateController = TextEditingController();
   final _zipController = TextEditingController();
   final _countryController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -79,39 +80,42 @@ class CompanyInformationDialog extends StatelessWidget {
                 radiusWhileDragging: Radius.circular(0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ListView(
-                    controller: _scrollController,
-                    children: [
-                      SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Company Name',controller: _companyNameController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Email address in invoice',controller: _emailAddressController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Phone Number',controller: _phoneNumberController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Additional information',controller: _additionalInformationController,),SizedBox(height: 20,),
-                      Text(
-                        'Business Number',
-                        style: TextStyle(
-                            color: MyColors.invoiceTxt,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0),
-                      ),
-                      SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Abbreviation',controller: _abbreviationController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Business Number',controller: _businessNumberController,),SizedBox(height: 20,),
-                      Text(
-                        'Address',
-                        style: TextStyle(
-                            color: MyColors.invoiceTxt,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0),
-                      ),
-                      SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Address 1',controller: _address1Controller,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Address 2',controller: _address2Controller,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'City',controller: _cityController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'State',controller: _stateController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Zip',controller: _zipController,),SizedBox(height: 20,),
-                      CompanyInformationTextField(labelText: 'Country',controller: _countryController,),SizedBox(height: 20,),
-                    ],
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      controller: _scrollController,
+                      children: [
+                        SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Company Name',controller: _companyNameController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Email address in invoice',controller: _emailAddressController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Phone Number',controller: _phoneNumberController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Additional information',controller: _additionalInformationController,),SizedBox(height: 20,),
+                        Text(
+                          'Business Number',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0),
+                        ),
+                        SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Abbreviation',controller: _abbreviationController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Business Number',controller: _businessNumberController,),SizedBox(height: 20,),
+                        Text(
+                          'Address',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0),
+                        ),
+                        SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Address 1',controller: _address1Controller,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Address 2',controller: _address2Controller,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'City',controller: _cityController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'State',controller: _stateController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Zip',controller: _zipController,),SizedBox(height: 20,),
+                        CompanyInformationTextField(labelText: 'Country',controller: _countryController,),SizedBox(height: 20,),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -153,25 +157,27 @@ class CompanyInformationDialog extends StatelessWidget {
   }
 
   void onSaveTap(BuildContext context) async{
-    showProgress(context);
+    if(_formKey.currentState.validate()){
+      showProgress(context);
 
-    userModel.companyInformation.companyName = _companyNameController.text;
-    userModel.companyInformation.emailOnInvoice = _emailAddressController.text;
-    userModel.companyInformation.phoneNumber = _phoneNumberController.text;
-    userModel.companyInformation.additionalInformation = _additionalInformationController.text;
-    userModel.companyInformation.abbreviation = _abbreviationController.text;
-    userModel.companyInformation.businessNumber = _businessNumberController.text;
-    userModel.companyInformation.address.address1 = _address1Controller.text;
-    userModel.companyInformation.address.address2 = _address2Controller.text;
-    userModel.companyInformation.address.city = _cityController.text;
-    userModel.companyInformation.address.state = _stateController.text;
-    userModel.companyInformation.address.zip = _zipController.text;
-    userModel.companyInformation.address.country = _countryController.text;
+      userModel.companyInformation.companyName = _companyNameController.text;
+      userModel.companyInformation.emailOnInvoice = _emailAddressController.text;
+      userModel.companyInformation.phoneNumber = _phoneNumberController.text;
+      userModel.companyInformation.additionalInformation = _additionalInformationController.text;
+      userModel.companyInformation.abbreviation = _abbreviationController.text;
+      userModel.companyInformation.businessNumber = _businessNumberController.text;
+      userModel.companyInformation.address.address1 = _address1Controller.text;
+      userModel.companyInformation.address.address2 = _address2Controller.text;
+      userModel.companyInformation.address.city = _cityController.text;
+      userModel.companyInformation.address.state = _stateController.text;
+      userModel.companyInformation.address.zip = _zipController.text;
+      userModel.companyInformation.address.country = _countryController.text;
 
-    var _result = await FirebaseService.updateCompanyInformation(userModel.companyInformation);
-    Navigator.pop(context);
-    if(_result){
+      var _result = await FirebaseService.updateCompanyInformation(userModel.companyInformation);
       Navigator.pop(context);
+      if(_result){
+        Navigator.pop(context);
+      }
     }
   }
 }

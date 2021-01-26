@@ -30,13 +30,48 @@ class MyPdf{
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(billName
-                , style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 20,fontWeight: FontWeight.normal)),SizedBox(height: 7,),
+                , style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 20,fontWeight: FontWeight.normal)),SizedBox(height: 5,),
             Text(userModel.companyInformation.companyName
                 ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 13,fontWeight: FontWeight.bold)
-            ),SizedBox(height: 5,),
+            ),SizedBox(height: 3,),
+            Text(userModel.companyInformation.address.address1
+                ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+            ),
+            Text(userModel.companyInformation.address.address2
+                ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+            ),
+            Row(
+                children: [
+                  Text(userModel.companyInformation.address.city
+                      ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+                  ),
+                  Padding(padding: EdgeInsets.only(left: 3),child:  Text(userModel.companyInformation.address.state
+                      ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+                  ),),
+                  Padding(padding: EdgeInsets.only(left: 3),child:  Text(userModel.companyInformation.address.zip
+                      ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+                  ),),
+                ]
+            ),
+            Text(userModel.companyInformation.address.country
+                ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+            ),
+            if(userModel.companyInformation.businessNumber.isNotEmpty)Row(
+              children: [
+                Text((userModel.companyInformation.abbreviation.isEmpty? 'ABN': userModel.companyInformation.abbreviation) + ' : '
+                    ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+                ),
+                Text(userModel.companyInformation.businessNumber
+                    ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+                ),
+              ]
+            ),
+             Text(userModel.companyInformation.phoneNumber
+                ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
+            ),
             Text(userModel.companyInformation.emailOnInvoice
                 ,style: TextStyle(color: PdfColor.fromHex('#000000'),fontSize: 10,fontWeight: FontWeight.normal)
-            ),SizedBox(height: 5,),
+            ),
           ],
         )
       ],
@@ -45,7 +80,7 @@ class MyPdf{
 
   Widget _itemListView(InvoiceItemModel item,int index) => Container(
        padding: EdgeInsets.symmetric(horizontal: 5,vertical: 8),
-       color: PdfColor.fromHex(index % 2 == 0 ? '#ffffff' : '#EEEEEE'),
+       color: PdfColor.fromHex(index % 2 == 0 ? '#EEEEEE' : '#ffffff'),
        child: Column(
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
@@ -76,7 +111,7 @@ class MyPdf{
                  Expanded(
                    flex: 1,
                    child: Text(
-                     '${Constants.indianCurrencySymbol}${item.price ?? 0}',
+                     '₹${item.price ?? 0}',
                      textAlign: TextAlign.right,
                      style: TextStyle(
                          color: PdfColor.fromHex('#000000'),
@@ -87,7 +122,7 @@ class MyPdf{
                  Expanded(
                    flex: 1,
                    child: Text(
-                     '${Constants.indianCurrencySymbol}${item.discount ?? 0}',
+                     '₹${item.discount ?? 0}',
                      textAlign: TextAlign.right,
                      style: TextStyle(
                          color: PdfColor.fromHex('#000000'),
@@ -96,7 +131,7 @@ class MyPdf{
                    ),
                  ),
                  Text(
-                   '${Constants.indianCurrencySymbol}${item.amount ?? 0}',
+                   '₹${item.amount ?? 0}',
                    textAlign: TextAlign.right,
                    style: TextStyle(
                        color: PdfColor.fromHex('#000000'),
@@ -126,51 +161,70 @@ class MyPdf{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Subtotal',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}${documents.subTotal}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        Text('₹${documents.subTotal.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
                       ]
                   ),
                   SizedBox(height: 5),
-                  /*if(documents.taxDiscountShipping.discount.isNotEmpty)*/Row(
+                  if(documents.taxDiscountShipping.discount != 0)Padding(padding: EdgeInsets.only(bottom: 5),
+                  child:Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Discount',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}0',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        Text('₹${documents.taxDiscountShipping.discount.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
                       ]
                   ),
+                  ),
+                  if(documents.taxDiscountShipping.shipping != 0 && !documents.taxDiscountShipping.nonTaxable)
+                    Padding(padding: EdgeInsets.only(bottom: 5),child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Shipping',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                          Text('₹${documents.taxDiscountShipping.shipping.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        ]
+                    ),),
+                  if(documents.taxDiscountShipping.tax != 0)
+                    Padding(padding: EdgeInsets.only(bottom: 5),child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('${documents.taxDiscountShipping.taxLabel}(${documents.taxDiscountShipping.taxPercentage}%)',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                          Text(documents.taxDiscountShipping.deductible ? '(₹${documents.taxDiscountShipping.tax.toStringAsFixed(2)})':'₹${documents.taxDiscountShipping.tax.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        ]
+                    ),),
+                  if(documents.taxDiscountShipping.secondTax != null && documents.taxDiscountShipping.secondTax.tax != 0)
+                    Padding(padding: EdgeInsets.only(bottom: 5),child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('${documents.taxDiscountShipping.secondTax.taxLabel}(${documents.taxDiscountShipping.secondTax.taxPercentage}%)',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                          Text(documents.taxDiscountShipping.secondTax.deductible ? '(₹${documents.taxDiscountShipping.secondTax.tax.toStringAsFixed(2)})':'₹${documents.taxDiscountShipping.secondTax.tax.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        ]
+                    ),),
                   SizedBox(height: 5),
-                  /*if(documents.taxDiscountShipping.tax.isNotEmpty)*/Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('TAX included(0%)',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}0',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                      ]
-                  ),
-                  SizedBox(height: 5),
-                  /*if(documents.taxDiscountShipping.shipping.isNotEmpty)*/Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Shipping',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}0',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                      ]
-                  ),
+                  if(documents.taxDiscountShipping.shipping != 0 && documents.taxDiscountShipping.nonTaxable)
+                    Padding(padding: EdgeInsets.only(bottom: 5),child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Shipping',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                          Text('₹${documents.taxDiscountShipping.shipping.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        ]
+                    ),),
                   Divider(
                     color: PdfColor.fromHex('#E4E4E4'),
                     thickness: 2,
                     height: 20,
                   ),
-                  if(documents.total != 0)Row(
+                  /*if(documents.total != 0)Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Net',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}${documents.total}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        Text('₹${documents.total}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
                       ]
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 5),*/
                   if(documents.total != 0)Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Total',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
-                        Text('${Constants.indianCurrencySymbol}${documents.total}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
+                        Text('₹${documents.total.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.normal ,fontSize: 10),),
                       ]
                   ),
                   Divider(
@@ -183,7 +237,7 @@ class MyPdf{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Amount Due',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.bold ,fontSize: 15),),
-                        Text('${Constants.indianCurrencySymbol}${documents.total}',style: TextStyle(color: PdfColor.fromHex('#00930C'),height:1,fontWeight: FontWeight.bold ,fontSize: 15),),
+                        Text('₹${documents.amountDue.toStringAsFixed(2)}',style: TextStyle(color: PdfColor.fromHex('#00930C'),height:1,fontWeight: FontWeight.bold ,fontSize: 15),),
                       ]
                   ),
                 ]
@@ -297,7 +351,7 @@ class MyPdf{
                   ]
               ),
               SizedBox(height: 5),
-              if(documents.po != null) Row(
+              if(documents.po.isNotEmpty) Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('PO #',style: TextStyle(color: PdfColor.fromHex('#000000'),height:1,fontWeight: FontWeight.bold ,fontSize: 10),),

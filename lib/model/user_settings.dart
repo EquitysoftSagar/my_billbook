@@ -7,7 +7,7 @@ class UserSettings {
   UserSettings({
     this.dueInDays = '7',
     this.sendMeCopy = false,
-    this.dateFormat = 'dd-MM-yyyy',
+    this.dateFormat = '05 Apr 2014',
     this.language = 'English',
   });
 

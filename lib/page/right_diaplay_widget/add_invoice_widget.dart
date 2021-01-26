@@ -16,7 +16,6 @@ import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/photo.dart';
-import 'package:my_billbook/model/second_tax.dart';
 import 'package:my_billbook/model/tax_discount_shipping.dart';
 import 'package:my_billbook/page/add_invoce_widget/invoice_customer_view_widget.dart';
 import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
@@ -67,6 +66,9 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   bool _mySignature = false;
   bool _clientSignature = false;
   String _recurring = 'None';
+  double _subTotal = 0.00;
+  double _total = 0.00;
+  double _grandTotal = 0.00;
 
   @override
   void initState() {
@@ -81,6 +83,9 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       _removeDueDate = d.dueDate == null ? true : false;
       _noteController.text = d.note;
       taxDiscountShipping = d.taxDiscountShipping;
+      _subTotal = d.subTotal;
+      _total = d.total;
+      _grandTotal = d.amountDue;
       _customer = d.customer;
       _invoiceItem = d.item;
       _mySignature = d.mySignature;
@@ -408,156 +413,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                               ),
                               Expanded(
                                 flex: 2,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Subtotal',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                        Text(
-                                          '${Constants.indianCurrencySymbol}${_getSubTotal().toStringAsFixed(2)}',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    if(taxDiscountShipping.discount != 0)Padding(
-                                      padding: const EdgeInsets.only(bottom: 15),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Discount',
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 13),
-                                          ),
-                                          Text(
-                                            '₹${taxDiscountShipping.discount.toStringAsFixed(2)}',
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 13),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if(taxDiscountShipping.shipping != 0)Padding(
-                                      padding: const EdgeInsets.only(bottom: 15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'shipping',
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 13),
-                                          ),
-                                          Text(
-                                            '₹${taxDiscountShipping.shipping.toStringAsFixed(2)}',
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 13),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                   Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '${taxDiscountShipping.taxLabel} (${taxDiscountShipping.tax}%)',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                        Text(
-                                          '₹${taxDiscountShipping.tax.toStringAsFixed(2)}',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Total',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                        Text(
-                                          '${Constants.indianCurrencySymbol}${_getSubTotal().toStringAsFixed(2)}',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Grand Total',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: MyColors.text,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15),
-                                        ),
-                                        Text(
-                                          '${Constants.indianCurrencySymbol}${_getGrandTotal().toStringAsFixed(2)}',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                child: _taxView(),
                               )
                             ],
                           ),
@@ -679,15 +535,229 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       physics: NeverScrollableScrollPhysics(),);
   }
 
+  Widget _taxView(){
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Subtotal',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+            Text(
+              '${Constants.indianCurrencySymbol}${_subTotal.toStringAsFixed(2)}',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        if(taxDiscountShipping.discount != 0)Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Discount',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+              Text(
+                '₹${taxDiscountShipping.discount.toStringAsFixed(2)}',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        if(taxDiscountShipping.shipping != 0 && !taxDiscountShipping.nonTaxable)Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Row(
+            mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'shipping',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+              Text(
+                '₹${taxDiscountShipping.shipping.toStringAsFixed(2)}',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${taxDiscountShipping.taxLabel} (${taxDiscountShipping.taxPercentage}%)',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+            Text(
+            taxDiscountShipping.deductible ? '(₹${taxDiscountShipping.tax.toStringAsFixed(2)})' : '₹${taxDiscountShipping.tax.toStringAsFixed(2)}',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        if(taxDiscountShipping.secondTax != null)Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Row(
+            mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${taxDiscountShipping.secondTax.taxLabel} (${taxDiscountShipping.secondTax.taxPercentage}%)',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+              Text(
+                  taxDiscountShipping.secondTax.deductible ? '(₹${taxDiscountShipping.secondTax.tax.toStringAsFixed(2)})' : '₹${taxDiscountShipping.secondTax.tax.toStringAsFixed(2)}',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        if(taxDiscountShipping.shipping != 0 && taxDiscountShipping.nonTaxable)Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Row(
+            mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'shipping',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+              Text(
+                '₹${taxDiscountShipping.shipping.toStringAsFixed(2)}',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: MyColors.text,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+            Text(
+              '${Constants.indianCurrencySymbol}${_total.toStringAsFixed(2)}',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Amount Due',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: MyColors.text,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15),
+            ),
+            Text(
+              '${Constants.indianCurrencySymbol}${_grandTotal.toStringAsFixed(2)}',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   void onTaxAndDiscountTap(BuildContext context) {
     showDialog(
         context: context,
         builder: (context) => AddTaxDiscountDialog(taxDiscountShipping: taxDiscountShipping,)).then((value){
-          if(value != null){
-            setState(() {});
+          if(value != null && value){
+            setState(() {
+              _calculateTax();
+              _setTotal();
+            });
           }
     });
   }
+
+  void _calculateTax(){
+    taxDiscountShipping.tax = (((_subTotal - taxDiscountShipping.discount) + (taxDiscountShipping.nonTaxable ? 0: taxDiscountShipping.shipping)) * taxDiscountShipping.taxPercentage) /100;
+    if(taxDiscountShipping.secondTax != null){
+      taxDiscountShipping.secondTax.tax = (((_subTotal - taxDiscountShipping.discount) + (taxDiscountShipping.nonTaxable ? 0:taxDiscountShipping.shipping)) * taxDiscountShipping.secondTax.taxPercentage) /100;
+    }
+  }
+
   void onAddItemTap() {
     showDialog(
         context: context,
@@ -698,28 +768,30 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
             )).then((value){
               if(value != null){
                 InvoiceItemModel itemModel = value;
-
                setState(() {
                  _invoiceItem.add(itemModel);
+                 _setSubTotal();
+                 _calculateTax();
+                 _setTotal();
                });
               }
     });
   }
 
-  int _getSubTotal(){
+  void _setSubTotal(){
     int _total = 0;
     for(InvoiceItemModel i in _invoiceItem){
       _total = _total + int.parse(i.amount);
     }
-    return _total;
+    _subTotal = _total.toDouble();
   }
 
-  int _getGrandTotal(){
-    int _total = 0;
-    // for(InvoiceItemModel i in _invoiceItem){
-    //   _total = _total + int.parse(i.amount);
-    // }
-    return _total;
+  void _setTotal(){
+    _total = taxDiscountShipping.deductible ? ((_subTotal - taxDiscountShipping.discount) + taxDiscountShipping.shipping) - taxDiscountShipping.tax : ((_subTotal - taxDiscountShipping.discount) + taxDiscountShipping.shipping) + taxDiscountShipping.tax;
+    if(taxDiscountShipping.secondTax != null){
+      _total = taxDiscountShipping.secondTax.deductible ? _total - taxDiscountShipping.secondTax.tax :_total + taxDiscountShipping.secondTax.tax;
+    }
+    _grandTotal = _total;
   }
 
   void onAlertYesTap() {
@@ -765,22 +837,22 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     showProgress(context);
 
     var d = Documents();
+
     d.invoice = _invoiceController.text;
     d.po = _poController.text;
     d.date = Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dateController.text));
     d.dueDate = _removeDueDate ? null : Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_dueOnDateController.text));
     d.customer = _customer;
     d.item = _invoiceItem;
-    d.subTotal = _getSubTotal().toDouble();
-    d.total = d.subTotal;
-    d.amountDue = d.total;
+    d.subTotal = _subTotal;
+    d.total = _total;
+    d.amountDue = double.parse(_grandTotal.toStringAsFixed(2));
     d.mySignature = _mySignature;
     d.clientSignature = _clientSignature;
     d.recurring = _recurring;
     d.note = _noteController.text;
     d.photo = _photoList;
-    d.taxDiscountShipping = TaxDiscountShipping();
-    d.taxDiscountShipping.secondTax = SecondTax();
+    d.taxDiscountShipping = taxDiscountShipping;
     d.createdAt = widget.forEdit ? widget.documents.updatedAt : Timestamp.fromDate(DateTime.now());
     d.updatedAt = Timestamp.fromDate(DateTime.now());
     d.status = 1;
@@ -818,6 +890,9 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   void _removeItem(InvoiceItemModel item) {
     setState(() {
       _invoiceItem.remove(item);
+      _setSubTotal();
+      _calculateTax();
+      _setTotal();
     });
   }
   void _updateItem(InvoiceItemModel item,int index) {
@@ -833,6 +908,9 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
         InvoiceItemModel _item = value;
         setState(() {
           _invoiceItem[index] = _item;
+          _setSubTotal();
+          _calculateTax();
+          _setTotal();
         });
       }
     });
