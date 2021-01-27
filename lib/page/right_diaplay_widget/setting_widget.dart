@@ -102,20 +102,17 @@ class SettingWidget extends StatelessWidget {
                             fontSize: 18.0),
                       ),
                       SizedBox(height: 20,),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            onUserAccountTap(context);
-                          },
-                          title: Text(
-                            'User Account',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          onUserAccountTap(context);
+                        },
+                        title: Text(
+                          'User Account',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -123,20 +120,17 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            onCompanyInformationTap(context);
-                          },
-                          title: Text(
-                            'Company Information',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          onCompanyInformationTap(context);
+                        },
+                        title: Text(
+                          'Company Information',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -144,18 +138,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Logo',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Logo',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -163,18 +154,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Payment Instruction',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Payment Instruction',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -182,18 +170,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Customer Payment Option',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Customer Payment Option',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -210,20 +195,17 @@ class SettingWidget extends StatelessWidget {
                             fontSize: 18.0),
                       ),
                       SizedBox(height: 20,),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            commonDialog(context,DialogType.invoiceNumber);
-                          },
-                          title: Text(
-                            'Invoice Number',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          commonDialog(context,DialogType.invoiceNumber);
+                        },
+                        title: Text(
+                          'Invoice Number',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -317,18 +299,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Currency',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Currency',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -336,18 +315,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Tax',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Tax',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -355,20 +331,17 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            commonDialog(context,DialogType.note);
-                          },
-                          title: Text(
-                            'Default Note',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          commonDialog(context,DialogType.note);
+                        },
+                        title: Text(
+                          'Default Note',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -376,20 +349,17 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            commonDialog(context,DialogType.termsAndCondition);
-                          },
-                          title: Text(
-                            'Default Terms and Conditions',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          commonDialog(context,DialogType.termsAndCondition);
+                        },
+                        title: Text(
+                          'Default Terms and Conditions',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -397,20 +367,17 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {
-                            commonDialog(context,DialogType.emailMessage);
-                          },
-                          title: Text(
-                            'Default Email Message',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {
+                          commonDialog(context,DialogType.emailMessage);
+                        },
+                        title: Text(
+                          'Default Email Message',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(
@@ -418,18 +385,15 @@ class SettingWidget extends StatelessWidget {
                         height: 1,
                         color: Colors.black26,
                       ),
-                      Ink(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 1),
-                          onTap: () {},
-                          title: Text(
-                            'Rename Fields',
-                            style: TextStyle(
-                                color: MyColors.invoiceTxt,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.0),
-                          ),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        onTap: () {},
+                        title: Text(
+                          'Rename Fields',
+                          style: TextStyle(
+                              color: MyColors.invoiceTxt,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
                         ),
                       ),
                       Divider(

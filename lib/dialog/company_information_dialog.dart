@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/company_information_text_field.dart';
+import 'package:my_billbook/text_field/company_information_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 

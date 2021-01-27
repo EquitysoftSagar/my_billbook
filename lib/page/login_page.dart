@@ -3,7 +3,7 @@ import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/page/sign_up_page.dart';
 import 'package:my_billbook/style/colors.dart';
 import 'package:my_billbook/style/images.dart';
-import 'package:my_billbook/ui/login_text_field.dart';
+import 'package:my_billbook/text_field/login_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 import 'package:my_billbook/util/routes.dart';
 

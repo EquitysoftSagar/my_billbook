@@ -7,7 +7,7 @@ import 'package:my_billbook/model/document.dart';
 import 'package:my_billbook/page/right_diaplay_widget/add_invoice_widget.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/search_text_field.dart';
+import 'package:my_billbook/text_field/search_text_field.dart';
 import 'package:provider/provider.dart';
 
 class InvoiceWidget extends StatefulWidget {

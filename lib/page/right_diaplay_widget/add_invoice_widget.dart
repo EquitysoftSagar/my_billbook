@@ -1,9 +1,11 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:my_billbook/dialog/add_photo_dialog.dart';
 import 'package:my_billbook/dialog/item_dialog.dart';
 import 'package:my_billbook/dialog/add_tax_discount_dialog.dart';
 import 'package:my_billbook/dialog/alert_dialog.dart';
@@ -11,6 +13,7 @@ import 'package:my_billbook/dialog/preview_dialog.dart';
 import 'package:my_billbook/dialog/send_email_dialog.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/item_view_widget/invoice_item_view_widget.dart';
+import 'package:my_billbook/item_view_widget/invoice_photo_item_view.dart';
 import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/model/document.dart';
@@ -22,7 +25,7 @@ import 'package:my_billbook/page/right_diaplay_widget/invoice_widget.dart';
 import 'package:my_billbook/pdf/pdf_creator.dart';
 import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/invoice_text_field.dart';
+import 'package:my_billbook/text_field/invoice_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 import 'package:provider/provider.dart';
@@ -55,8 +58,6 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
   final _noteController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<State<StatefulWidget>> _printKey = GlobalKey();
-
 
   Customer _customer;
   List<InvoiceItemModel> _invoiceItem = [];
@@ -83,6 +84,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       _removeDueDate = d.dueDate == null ? true : false;
       _noteController.text = d.note;
       taxDiscountShipping = d.taxDiscountShipping;
+      _photoList = d.photo;
       _subTotal = d.subTotal;
       _total = d.total;
       _grandTotal = d.amountDue;
@@ -134,7 +136,7 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                         fontSize: 25.0),
                   ),
                   Spacer(),
-                  Tooltip(
+                   if(widget.forEdit)Tooltip(
                     message: 'Preview',
                     child: FloatingActionButton(onPressed: (){
                       onPreviewTap(context);
@@ -161,295 +163,296 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
                   )*/
                 ],
               ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.only(top: 30, bottom: 30, left: 5, right: 5),
-                padding: EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
-                    boxShadow: [
-                      BoxShadow(color: MyColors.boxShadow, blurRadius: 6)
-                    ]),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 20),
-                      child: SizedBox(
-                        height: 320,
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 3,
-                                child: InvoiceCustomerViewWidget(customer: _customer,onSetCustomer:onSetCustomer,)
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment
-                                    .start,
-                                children: [
-                                  Row(
+              Padding(
+                padding: const EdgeInsets.only(top: 30, bottom: 30, left: 5, right: 5),
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          child: SizedBox(
+                            height: 320,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 3,
+                                    child: InvoiceCustomerViewWidget(customer: _customer,onSetCustomer:onSetCustomer,)
+                                ),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
-                                      Expanded(
-                                          child: Form(
-                                            key: _formKey,
-                                            child: InvoiceTextField(
-                                              labelText: 'Invoice #',
-                                              controller: _invoiceController,
-                                            ),
-                                          )),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Expanded(
-                                          child: InvoiceTextField(
-                                            labelText: 'Po #',
-                                            controller: _poController,
-                                          ))
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 25,
-                                  ),
-                                  InvoiceTextField(
-                                    labelText: 'Date',
-                                    controller: _dateController,
-                                    onSuffixTap: () {
-                                      onDateTap(context);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 25,
-                                  ),
-                                  Visibility(
-                                    visible: !_removeDueDate,
-                                    child: InvoiceTextField(
-                                      labelText: 'Due on',
-                                      controller: _dueOnDateController,
-                                      onSuffixTap: () {
-                                        onDueDateTap(context);
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 25,
-                                  ),
-                                  SizedBox(
-                                    width: 200,
-                                    child: SwitchListTile(
-                                      value: _removeDueDate,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _removeDueDate = value;
-                                        });
-                                      },
-                                      title: Text('Remove due date'),
-                                      contentPadding: EdgeInsets.zero,),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    _itemHeader(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Divider(
-                      color: MyColors.divider,
-                      thickness: 2,
-                      height: 1,
-                    ),
-                    _itemList(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    RaisedButton(
-                      onPressed:onAddItemTap,
-                      child: Text(
-                        '+ Add Item',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: MyColors.divider,
-                      thickness: 2,
-                      height: 1,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .start,
-                                  crossAxisAlignment: CrossAxisAlignment
-                                      .start,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        onTaxAndDiscountTap(context);
-                                      },
-                                      child: Row(
+                                      Row(
                                         children: [
-                                          Icon(
-                                            Icons.settings,
-                                            color: MyColors.accent,
-                                            size: 15,
+                                          Expanded(
+                                              child: Form(
+                                                key: _formKey,
+                                                child: InvoiceTextField(
+                                                  labelText: 'Invoice #',
+                                                  controller: _invoiceController,
+                                                ),
+                                              )),
+                                          SizedBox(
+                                            width: 20,
                                           ),
-                                          Text(
-                                            ' Tax ,Discount & Shipping',
-                                            style: TextStyle(
-                                                color: MyColors.accent,
-                                                fontWeight: FontWeight
-                                                    .w500,
-                                                fontSize: 13),
-                                          ),
+                                          Expanded(
+                                              child: InvoiceTextField(
+                                                labelText: 'Po #',
+                                                controller: _poController,
+                                              ))
                                         ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    SizedBox(
+                                      SizedBox(
+                                        height: 25,
+                                      ),
+                                      InvoiceTextField(
+                                        labelText: 'Date',
+                                        controller: _dateController,
+                                        onSuffixTap: () {
+                                          onDateTap(context);
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height: 25,
+                                      ),
+                                      Visibility(
+                                        visible: !_removeDueDate,
+                                        child: InvoiceTextField(
+                                          labelText: 'Due on',
+                                          controller: _dueOnDateController,
+                                          onSuffixTap: () {
+                                            onDueDateTap(context);
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 25,
+                                      ),
+                                      SizedBox(
                                         width: 200,
                                         child: SwitchListTile(
-                                          contentPadding: EdgeInsets
-                                              .zero,
-                                          value: _mySignature,
+                                          value: _removeDueDate,
                                           onChanged: (value) {
                                             setState(() {
-                                              _mySignature = value;
+                                              _removeDueDate = value;
                                             });
                                           },
-                                          title: Text(
-                                            'My Signature',
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight
-                                                    .w500,
-                                                fontSize: 13),
-                                          ),
-                                        )),
-                                    SizedBox(
-                                        width: 200,
-                                        child: SwitchListTile(
-                                          contentPadding: EdgeInsets
-                                              .zero,
-                                          value: _clientSignature,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _clientSignature = value;
-                                            });
-                                          },
-                                          title: Text(
-                                            'Client\'s Signature',
-                                            style: TextStyle(
-                                                color: MyColors.text,
-                                                fontWeight: FontWeight
-                                                    .w500,
-                                                fontSize: 13),
-                                          ),
-                                        )),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                      width: 150,
-                                      child: DropdownButtonFormField(
-                                          value: _recurring,
-                                          onChanged: onRecurringChange,
-                                          decoration: InputDecoration(
-                                              contentPadding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 5,
-                                                  horizontal: 5),
-                                              labelText: 'Recurring',
-                                              fillColor: Colors.black
-                                                  .withOpacity(0.05),
-                                              filled: true,
-                                              labelStyle: TextStyle(
-                                                  color: MyColors
-                                                      .accent,
-                                                  fontSize: 13),
-                                              hintStyle: TextStyle(
-                                                  height: 2),
-                                              hintText: '',
-                                              focusColor: MyColors
-                                                  .accent),
-                                          items: [
-                                            'None',
-                                            'Every day',
-                                            'Every week',
-                                            'Every 2 weeks',
-                                            'Every 4 weeks'
-                                          ].map((e) {
-                                            return DropdownMenuItem(
-                                              child: Text(e),
-                                              value: e,
-                                            );
-                                          }).toList()),
-                                    )
-                                  ],
+                                          title: Text('Remove due date'),
+                                          contentPadding: EdgeInsets.zero,),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        _itemHeader(),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Divider(
+                          color: MyColors.divider,
+                          thickness: 2,
+                          height: 1,
+                        ),
+                        _itemList(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RaisedButton(
+                          onPressed:onAddItemTap,
+                          child: Text(
+                            '+ Add Item',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Divider(
+                          color: MyColors.divider,
+                          thickness: 2,
+                          height: 1,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            onTaxAndDiscountTap(context);
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.settings,
+                                                color: MyColors.accent,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ' Tax ,Discount & Shipping',
+                                                style: TextStyle(
+                                                    color: MyColors.accent,
+                                                    fontWeight: FontWeight
+                                                        .w500,
+                                                    fontSize: 13),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        SizedBox(
+                                            width: 200,
+                                            child: SwitchListTile(
+                                              contentPadding: EdgeInsets
+                                                  .zero,
+                                              value: _mySignature,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _mySignature = value;
+                                                });
+                                              },
+                                              title: Text(
+                                                'My Signature',
+                                                style: TextStyle(
+                                                    color: MyColors.text,
+                                                    fontWeight: FontWeight
+                                                        .w500,
+                                                    fontSize: 13),
+                                              ),
+                                            )),
+                                        SizedBox(
+                                            width: 200,
+                                            child: SwitchListTile(
+                                              contentPadding: EdgeInsets
+                                                  .zero,
+                                              value: _clientSignature,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _clientSignature = value;
+                                                });
+                                              },
+                                              title: Text(
+                                                'Client\'s Signature',
+                                                style: TextStyle(
+                                                    color: MyColors.text,
+                                                    fontWeight: FontWeight
+                                                        .w500,
+                                                    fontSize: 13),
+                                              ),
+                                            )),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        SizedBox(
+                                          width: 150,
+                                          child: DropdownButtonFormField(
+                                              value: _recurring,
+                                              onChanged: onRecurringChange,
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 5),
+                                                  labelText: 'Recurring',
+                                                  fillColor: Colors.black
+                                                      .withOpacity(0.05),
+                                                  filled: true,
+                                                  labelStyle: TextStyle(
+                                                      color: MyColors
+                                                          .accent,
+                                                      fontSize: 13),
+                                                  hintStyle: TextStyle(
+                                                      height: 2),
+                                                  hintText: '',
+                                                  focusColor: MyColors
+                                                      .accent),
+                                              items: [
+                                                'None',
+                                                'Every day',
+                                                'Every week',
+                                                'Every 2 weeks',
+                                                'Every 4 weeks'
+                                              ].map((e) {
+                                                return DropdownMenuItem(
+                                                  child: Text(e),
+                                                  value: e,
+                                                );
+                                              }).toList()),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: _taxView(),
+                                  )
+                                ],
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: _taxView(),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Divider(
+                                color: MyColors.divider,
+                                thickness: 2,
+                                height: 1,
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              InvoiceTextField(
+                                labelText: 'Note',
+                                controller: _noteController,
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              _photoListView(),
+                              FlatButton(
+                                onPressed: (){
+                                  _addPhotoTap(context);
+                                },
+                                color: MyColors.accent,
+                                child: Text(
+                                  '+ Add Photo',
+                                  style: TextStyle(
+                                      color: Colors.white),
+                                ),
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Divider(
-                            color: MyColors.divider,
-                            thickness: 2,
-                            height: 1,
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          InvoiceTextField(
-                            labelText: 'Note',
-                            controller: _noteController,
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          RaisedButton(
-                            onPressed: () {},
-                            padding:
-                            EdgeInsets.symmetric(
-                                horizontal: 35, vertical: 18),
-                            child: Text(
-                              '+ Add Photo',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 18),
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -532,6 +535,20 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       },
       shrinkWrap: true,
       itemCount: _invoiceItem.length,
+      physics: NeverScrollableScrollPhysics(),);
+  }
+  Widget _photoListView() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return InvoicePhotoItemView(
+          photo: _photoList[index],
+          index: index,
+          editFunction: _editPhotoTap,
+          removeFunction: _removePhotoTap,
+        );
+      },
+      shrinkWrap: true,
+      itemCount: _photoList.length,
       physics: NeverScrollableScrollPhysics(),);
   }
 
@@ -851,7 +868,6 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     d.clientSignature = _clientSignature;
     d.recurring = _recurring;
     d.note = _noteController.text;
-    d.photo = _photoList;
     d.taxDiscountShipping = taxDiscountShipping;
     d.createdAt = widget.forEdit ? widget.documents.updatedAt : Timestamp.fromDate(DateTime.now());
     d.updatedAt = Timestamp.fromDate(DateTime.now());
@@ -863,9 +879,13 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
     bool _result;
 
     if(widget.forEdit){
+      await _uploadingPhotos();
+      d.photo = _photoList;
        _result = await FirebaseService.editDocuments(widget.billId, widget.docId, d);
     }else{
       widget.bills.settingNext = widget.bills.settingNext + 1;
+      await _uploadingPhotos();
+      d.photo = _photoList;
        _result = await FirebaseService.addDocument(widget.billId, d,widget.bills.settingNext);
     }
 
@@ -878,6 +898,17 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
         id: widget.billId,
         bills: widget.bills,
       );
+    }
+  }
+
+  Future<void> _uploadingPhotos()async{
+    for(Photo p in _photoList){
+      if(p.imageLink == null){
+        var link = await FirebaseService.uploadImage(p.imageByte, widget.billId);
+        if(link != null){
+          p.imageLink = link;
+        }
+      }
     }
   }
 
@@ -941,4 +972,34 @@ class _AddInvoiceWidgetState extends State<AddInvoiceWidget> {
       }
     });
   }
+
+
+  void _addPhotoTap(BuildContext context) {
+    showDialog(context: context,builder: (context) => AddPhotoDialog(addPhotoFunction: _addPhoto,forEdit: false,));
+  }
+
+  void _editPhotoTap(Photo photo,int index){
+    showDialog(context: context,builder: (context) => AddPhotoDialog(editPhotoFunction: _editPhoto,forEdit: true,photo: photo,index: index,));
+  }
+  void _addPhoto(Photo photo){
+    setState(() {
+      _photoList.add(photo);
+    });
+  }
+  void _editPhoto(int index ,Photo photo){
+    setState(() {
+      _photoList[index] = photo;
+    });
+  }
+  void _removePhotoTap(Photo photo){
+    setState(() {
+      _photoList.remove(photo);
+    });
+  }
+  // void anyChanges(){
+  //   if(widget.forEdit){
+  //     var d = widget.documents;
+  //     if(d.invoice == )
+  //   }
+  // }
 }

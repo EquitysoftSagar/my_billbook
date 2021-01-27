@@ -4,8 +4,7 @@ import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/address.dart';
 import 'package:my_billbook/model/customer.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/customer_text_field.dart';
-import 'package:my_billbook/util/constants.dart';
+import 'package:my_billbook/text_field/customer_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 
 import 'import_customer_item_dialog.dart';

@@ -492,4 +492,18 @@ class FirebaseService {
       // e.g, e.code == 'canceled'
     }
   }
+  static Future<String> uploadImage(Uint8List uint8list,String billDocId)async{
+    try {
+      var _task = await _firebaseStorage
+          .ref('${firebaseUser.uid}/$billDocId/images/${DateTime.now().millisecondsSinceEpoch}.jpg')
+          .putData(uint8list, SettableMetadata(contentType: "application/image"));
+      // toastSuccess('Upload Successfully');
+      return _task.ref.getDownloadURL();
+    } on FirebaseException catch (e) {
+      toastError('Error when uploading image file');
+      print('error when uploading image file ===> $e}');
+      return null;
+      // e.g, e.code == 'canceled'
+    }
+  }
 }

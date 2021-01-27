@@ -2,11 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/bills.dart';
-import 'package:my_billbook/provider/home_page_provider.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
-import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class AddDocumentDialog extends StatelessWidget {

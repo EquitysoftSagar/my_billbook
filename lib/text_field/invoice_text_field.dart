@@ -19,7 +19,7 @@ class InvoiceTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      maxLines:  labelText == 'Note' ? 4 : null,
+      // maxLines:  labelText == 'Note' ? 4 : null,
       style: TextStyle(color: MyColors.text,fontWeight: FontWeight.w500),
       keyboardType: TextInputType.text,
       obscureText: labelText == 'Password' ? true : false,

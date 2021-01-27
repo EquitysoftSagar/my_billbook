@@ -41,26 +41,18 @@ class PreviewDialog extends StatelessWidget {
                     topRight: Radius.circular(8),
                   )),
               padding: EdgeInsets.only(left: 20),
-              child: SingleChildScrollView(
-                child: Text(
-                  'Preview',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
-                ),
+              child: Text(
+                'Preview',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             Flexible(
-              child: /*PdfPreview(
-                build: (PdfPageFormat format) {
-                return uint8list;
-              },),*/
-              EasyWebView(
+              child: EasyWebView(
                 src: url,
-                onLoaded: () { }, // Try to convert to flutter widgets
-                // width: 100,
-                // height: 100,
+                onLoaded: () {},
               ),
             ),
             SizedBox(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_billbook/model/bills.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/invoice_number_text_field.dart';
+import 'package:my_billbook/text_field/invoice_number_text_field.dart';
 
 class SettingsInvoiceNumberItemView extends StatelessWidget {
   final Bills bills;

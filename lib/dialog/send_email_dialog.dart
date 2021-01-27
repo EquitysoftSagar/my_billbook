@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/send_email_text_field.dart';
+import 'package:my_billbook/text_field/send_email_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 

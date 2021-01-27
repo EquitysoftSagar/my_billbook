@@ -7,7 +7,7 @@ import 'package:my_billbook/model/user.dart';
 import 'package:my_billbook/model/user_settings.dart';
 import 'package:my_billbook/page/home_page.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/sign_up_text_field.dart';
+import 'package:my_billbook/text_field/sign_up_text_field.dart';
 import 'package:my_billbook/util/methods.dart';
 
 class SignUpPage extends StatelessWidget {

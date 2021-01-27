@@ -4,7 +4,7 @@ import 'package:my_billbook/firebase/firebase_service.dart';
 import 'package:my_billbook/model/invoice_item_model.dart';
 import 'package:my_billbook/model/item.dart';
 import 'package:my_billbook/style/colors.dart';
-import 'package:my_billbook/ui/item_text_field.dart';
+import 'package:my_billbook/text_field/item_text_field.dart';
 import 'package:my_billbook/util/constants.dart';
 import 'package:my_billbook/util/methods.dart';
 
