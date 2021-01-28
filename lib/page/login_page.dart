@@ -14,8 +14,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text = 'smeetpanchal857@gmail.com';
-    _passwordController.text = '123456';
+    // _emailController.text = 'smeetpanchal857@gmail.com';
+    // _passwordController.text = '123456';
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
